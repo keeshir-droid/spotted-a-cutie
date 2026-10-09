@@ -1,0 +1,604 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Design board · Spotted a cutie (never deployed)</title>
+<link rel="stylesheet" href="../src/design-tokens.css">
+<style>
+/* ---------- family base (copied from shared-kit/tokens.css; the board never links the kit) ---------- */
+:root { --bg: #f6f2ea; --card: #fffdf8; --text: #1c2433; --ink-2: #3a4252; --accent: #1f3a5f; --line: #e6dfd1; --radius-sm: 16px;
+  --shadow-sm: 0 1px 2px rgba(60,45,15,.06), 0 3px 10px rgba(60,45,15,.05); --safe-b: 0px; }
+* { box-sizing: border-box; }
+html { background: var(--sc-paper); -webkit-text-size-adjust: 100%; }
+body { margin: 0; width: 390px; background: var(--sc-paper); color: var(--sc-ink); font: 16px/1.5 var(--sc-sans); -webkit-font-smoothing: antialiased; }
+svg { display: block; }
+.num { font-variant-numeric: var(--sc-numeric); }
+
+/* ---------- the board's own furniture ---------- */
+.b-sec { padding: 40px 20px 32px; border-top: 1px solid var(--sc-line-2); }
+.b-k { font: 600 var(--sc-fs-label)/1 var(--sc-sans); letter-spacing: var(--sc-track-label); text-transform: uppercase; color: var(--sc-ink-3); display: flex; gap: 10px; align-items: center; margin: 0 0 10px; }
+.b-k b { font-weight: 600; color: var(--sc-ink); font-variant-numeric: var(--sc-numeric); }
+.b-h { font: 400 1.75rem/1.1 var(--sc-serif); letter-spacing: var(--sc-track-display); margin: 0 0 14px; text-wrap: balance; }
+.b-p { margin: 0 0 12px; color: var(--sc-ink-2); font-size: .9375rem; }
+.b-note { font: 400 .8125rem/1.4 var(--sc-sans); color: var(--sc-ink-3); margin: 8px 0 0; }
+.b-sub { font: 600 var(--sc-fs-label)/1 var(--sc-sans); letter-spacing: var(--sc-track-label); text-transform: uppercase; color: var(--sc-ink-3); margin: 26px 0 12px; }
+
+/* cover */
+.cover { padding: 28px 20px 36px; }
+.cover .b-k { justify-content: space-between; }
+.cover h1 { font: 400 3rem/.98 var(--sc-serif); letter-spacing: -.015em; margin: 26px 0 16px; }
+.cover .idea { font: 400 1.3rem/1.3 var(--sc-serif); font-style: italic; margin: 0 0 18px; color: var(--sc-ink); text-wrap: pretty; }
+.cover .aside { font: 600 1.6rem/1 var(--sc-hand); color: var(--sc-ink-2); transform: rotate(-3deg); display: inline-block; margin: 4px 0 0 8px; }
+.label-card { border: 1px solid var(--sc-line-2); border-radius: 4px; padding: 12px 14px; display: grid; grid-template-columns: 92px 1fr; row-gap: 6px; font-size: .875rem; background: var(--sc-stock); }
+.label-card dt { font: 600 .6875rem/1.6 var(--sc-sans); letter-spacing: .1em; text-transform: uppercase; color: var(--sc-ink-3); }
+.label-card dd { margin: 0; color: var(--sc-ink); }
+.refs { margin: 18px 0 0; padding: 0; list-style: none; counter-reset: r; display: grid; gap: 8px; }
+.refs li { counter-increment: r; display: grid; grid-template-columns: 26px 1fr; font-size: .875rem; color: var(--sc-ink-2); }
+.refs li::before { content: counter(r, decimal-leading-zero); font: 600 .75rem/1.6 var(--sc-sans); color: var(--sc-ink-3); font-variant-numeric: tabular-nums; }
+
+/* swatches */
+.sw-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.sw { border: 1px solid var(--sc-line); border-radius: 4px; background: var(--sc-stock); overflow: hidden; }
+.sw i { display: block; height: 56px; border-bottom: 1px solid rgba(28,36,51,.08); }
+.sw div { padding: 8px 10px 10px; font-size: .75rem; line-height: 1.35; color: var(--sc-ink-3); }
+.sw strong { display: block; font: 600 .8125rem/1.3 var(--sc-sans); color: var(--sc-ink); }
+.sw code { font: 500 .75rem/1 ui-monospace, "Cascadia Mono", Consolas, monospace; color: var(--sc-ink-2); }
+.ratio { display: flex; height: 18px; border-radius: 3px; overflow: hidden; border: 1px solid var(--sc-line-2); margin: 4px 0 6px; }
+.ratio span { display: block; height: 100%; }
+.ratio-k { display: flex; justify-content: space-between; font: 500 .75rem/1 var(--sc-sans); color: var(--sc-ink-3); font-variant-numeric: tabular-nums; }
+.kinds { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.kind-ink { border-radius: 4px; padding: 10px 10px 9px; color: var(--sc-cream); min-height: 84px; display: flex; flex-direction: column; justify-content: space-between; }
+.kind-ink b { font: 400 1.35rem/1 var(--sc-serif); }
+.kind-ink span { font: 600 .6875rem/1.25 var(--sc-sans); letter-spacing: .06em; opacity: .9; }
+.foil-chip { height: 56px; background: var(--sc-foil); position: relative; overflow: hidden; }
+.foil-chip::after { content: ""; position: absolute; inset: 0; background: linear-gradient(118deg, transparent 0 46%, rgba(255,246,216,.35) 50%, transparent 54%), repeating-linear-gradient(0deg, rgba(255,255,255,.06) 0 1px, transparent 1px 3px); }
+
+/* type specimens */
+.spec { border-top: 1px solid var(--sc-line); padding: 14px 0 12px; }
+.spec:first-of-type { border-top: 0; }
+.spec .meta { display: flex; justify-content: space-between; font: 500 .75rem/1 var(--sc-sans); color: var(--sc-ink-3); margin-bottom: 8px; font-variant-numeric: tabular-nums; }
+.t-hero { font: 400 var(--sc-fs-hero)/1 var(--sc-serif); letter-spacing: var(--sc-track-display); }
+.t-h1 { font: 400 var(--sc-fs-h1)/1.1 var(--sc-serif); }
+.t-name { font: 400 var(--sc-fs-name)/1.05 var(--sc-serif); letter-spacing: var(--sc-track-display); }
+.t-ital { font: italic 400 1.5rem/1.2 var(--sc-serif); }
+.t-body { font: 400 var(--sc-fs-body)/1.5 var(--sc-sans); color: var(--sc-ink-2); }
+.t-label { font: 600 var(--sc-fs-label)/1 var(--sc-sans); letter-spacing: var(--sc-track-label); text-transform: uppercase; color: var(--sc-ink-3); }
+.t-hand { font: 600 var(--sc-fs-hand-lg)/1.1 var(--sc-hand); color: var(--sc-ink-2); }
+.t-gothic { font: 400 3.4rem/.95 var(--sc-gothic); letter-spacing: .02em; }
+.t-gothic-sm { font: 400 1.05rem/1 var(--sc-gothic); letter-spacing: .14em; color: rgba(28,36,51,.62); }
+.card-only { display: inline-block; font: 600 .625rem/1 var(--sc-sans); letter-spacing: .12em; text-transform: uppercase; color: var(--sc-ink-3); border: 1px solid var(--sc-line-2); border-radius: 3px; padding: 4px 5px 3px; }
+.marks-row { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; margin-top: 4px; }
+.marks-row span { font: 500 .8125rem/1 var(--sc-sans); color: var(--sc-ink-2); }
+
+/* icons */
+.icon-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0; border-top: 1px solid var(--sc-line); border-left: 1px solid var(--sc-line); }
+.icon-grid figure { margin: 0; height: 72px; display: grid; place-items: center; align-content: center; gap: 6px; border-right: 1px solid var(--sc-line); border-bottom: 1px solid var(--sc-line); color: var(--sc-ink); }
+.icon-grid figcaption { font: 500 .6875rem/1 var(--sc-sans); color: var(--sc-ink-3); }
+.icon-big { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+.icon-big div { height: 76px; display: grid; place-items: center; color: var(--sc-ink); background: var(--sc-stock); border: 1px solid var(--sc-line); border-radius: 4px; }
+
+/* ================= COMPONENTS (reference styles for the site-builder) ================= */
+.state { font: 600 .6875rem/1 var(--sc-sans); letter-spacing: .1em; text-transform: uppercase; color: var(--sc-ink-3); margin: 14px 0 6px; }
+.row { display: flex; gap: 10px; align-items: center; }
+.stack { display: grid; gap: 12px; }
+
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; height: var(--sc-h-btn); padding: 0 24px; width: 100%;
+  border: 0; border-radius: var(--sc-r-btn); background: var(--sc-accent); color: var(--sc-on-accent); font: 600 var(--sc-fs-btn)/1 var(--sc-sans); letter-spacing: .005em; }
+.btn.is-pressed { background: var(--sc-accent-2); transform: translateY(1px); }
+.btn.is-focus { box-shadow: 0 0 0 2px var(--sc-paper), 0 0 0 3.5px var(--sc-ink), 0 0 0 6.5px var(--sc-accent-soft); }
+.btn-2 { background: transparent; color: var(--sc-ink); box-shadow: inset 0 0 0 1.5px var(--sc-ink); }
+.btn-2.is-pressed { background: var(--sc-accent-soft); }
+.spin { width: 14px; height: 14px; border-radius: 50%; border: 1.75px solid rgba(255,255,255,.35); border-top-color: #fff; border-right-color: #fff; }
+.btn-q { display: inline-flex; align-items: center; gap: 8px; height: var(--sc-h-quiet); padding: 0 8px; border: 0; background: none; border-radius: 10px;
+  color: var(--sc-ink-2); font: 600 .9375rem/1 var(--sc-sans); }
+.btn-q u { text-decoration: underline; text-decoration-color: var(--sc-line-2); text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
+.btn-q.is-pressed { background: var(--sc-accent-soft); }
+.btn-q.bad { color: var(--sc-bad); }
+.ibtn { width: var(--sc-tap); height: var(--sc-tap); display: grid; place-items: center; border-radius: var(--sc-r-icon); color: var(--sc-ink); background: none; border: 0; }
+.ibtn.is-pressed { background: var(--sc-accent-soft); }
+
+.chip { flex: none; display: inline-flex; align-items: center; gap: 8px; height: var(--sc-h-chip); padding: 0 14px 0 10px; border-radius: var(--sc-r-chip);
+  background: var(--sc-stock); border: 1px solid var(--sc-line-2); color: var(--sc-ink); font: 600 var(--sc-fs-chip)/1 var(--sc-sans); white-space: nowrap; }
+.chip.plain { padding: 0 14px; }
+.chip.is-pressed { background: var(--sc-accent-soft); }
+.chip.is-sel { background: var(--sc-accent); border-color: var(--sc-accent); color: var(--sc-on-accent); }
+.chip.is-sel .mini { box-shadow: 0 0 0 1.5px #fff; }
+.mini { width: 14px; height: 18px; border-radius: 1.5px; position: relative; box-shadow: 0 0 0 1px rgba(28,36,51,.3); flex: none; overflow: hidden; }
+.mini::before, .mini::after { content: ""; position: absolute; }
+.mini.minimal { background: #f7f3ec; } .mini.minimal::before { inset: 2px 2px 6px; border: 1px solid #1c2433; }
+.mini.trading { background: #4f5d6e; } .mini.trading::before { inset: 2px 2px 7px; background: #f8f1e2; border-radius: 1px; }
+.mini.polaroid { background: #fbf8f1; } .mini.polaroid::before { inset: 2px 2px 6px; background: #9aa1a8; }
+.mini.wanted { background: #e9d8b4; } .mini.wanted::before { left: 2px; right: 2px; top: 2px; height: 3px; background: #2a2118; } .mini.wanted::after { left: 3px; right: 3px; top: 7px; bottom: 4px; border: 1px solid #2a2118; }
+.mini.dating { background: #f3e3da; } .mini.dating::before { left: 2px; right: 2px; top: 2px; height: 10px; border-radius: 2px; background: #c9a99c; } .mini.dating::after { width: 4px; height: 4px; border-radius: 50%; background: #9e3a4f; left: 5px; bottom: 2px; }
+.mini.news { background: #f2efe6; } .mini.news::before { left: 2px; right: 2px; top: 3px; height: 2px; background: #1d1b18; box-shadow: 0 3px 0 #1d1b18, 0 6px 0 rgba(29,27,24,.5); } .mini.news::after { left: 2px; right: 2px; top: 11px; bottom: 2px; background: #8d8a83; }
+.chips-scroll { display: flex; gap: 8px; overflow: hidden; margin: 0 -20px; padding: 0 20px;
+  -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent); mask-image: linear-gradient(90deg, #000 calc(100% - 28px), transparent); }
+.chips-wrap { display: flex; flex-wrap: wrap; gap: 8px; }
+
+.tile { position: relative; width: var(--sc-tile); height: var(--sc-tile); border-radius: var(--sc-r-tile); background: var(--sc-stock); border: 1px solid var(--sc-line-2);
+  display: grid; justify-items: center; align-content: center; gap: 8px; color: var(--sc-ink); padding-top: 6px; }
+.tile .no { position: absolute; top: 9px; left: 11px; font: 600 .6875rem/1 var(--sc-sans); letter-spacing: .06em; color: var(--sc-ink-3); font-variant-numeric: tabular-nums; }
+.tile .lab { font: 600 var(--sc-fs-chip)/1.1 var(--sc-sans); max-width: 92px; text-align: center; text-wrap: balance; }
+.tile.is-pressed { background: var(--sc-accent-soft); transform: scale(.97); }
+.tile.is-sel { box-shadow: inset 0 0 0 1px var(--sc-accent); border-color: var(--sc-accent); }
+.tiles { display: grid; grid-template-columns: repeat(3, var(--sc-tile)); gap: var(--sc-tile-gap); }
+
+.tools { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.tool { height: var(--sc-tool-h); border-radius: var(--sc-r-tool); background: var(--sc-stock); border: 1px solid var(--sc-line-2); display: grid; justify-items: center; align-content: center; gap: 5px;
+  font: 600 var(--sc-fs-tool)/1.1 var(--sc-sans); color: var(--sc-ink); text-align: center; padding: 0 4px; }
+.tool.is-pressed { background: var(--sc-accent-soft); }
+
+.field-l { display: block; font: 600 var(--sc-fs-label)/1 var(--sc-sans); letter-spacing: var(--sc-track-label); text-transform: uppercase; color: var(--sc-ink-3); margin: 0 0 8px; }
+.field { position: relative; height: var(--sc-h-field); border-radius: var(--sc-r-field); background: var(--sc-stock); border: 1px solid var(--sc-line-2); border-bottom: var(--sc-field-rule);
+  display: flex; align-items: center; padding: 0 56px 0 14px; font: 500 var(--sc-fs-field)/1.2 var(--sc-sans); color: var(--sc-ink); }
+.field.has-ico { padding-left: 42px; }
+.field .ico { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--sc-ink-3); }
+.field .ph { color: var(--sc-ink-3); font-weight: 400; }
+.field .count { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font: 400 var(--sc-fs-small)/1 var(--sc-sans); color: var(--sc-ink-3); font-variant-numeric: var(--sc-numeric); }
+.field.is-focus { border-bottom-color: var(--sc-accent); box-shadow: var(--sc-focus-ring); }
+.field .caret { display: inline-block; width: 1.5px; height: 20px; background: var(--sc-accent); margin-left: 1px; }
+.field.is-limit .count { color: var(--sc-bad); }
+.field-row { display: grid; grid-template-columns: 1fr 44px; gap: 8px; align-items: end; }
+.die-btn { width: 44px; height: 52px; border-radius: 10px; border: 1px solid var(--sc-line-2); background: var(--sc-stock); display: grid; place-items: center; color: var(--sc-ink); }
+
+/* sticky bar + sheet */
+.bar { display: flex; gap: 10px; padding: 12px 20px 16px; background: var(--sc-paper); border-top: 1px solid var(--sc-line); }
+.bar .btn { flex: 1.3; padding: 0 16px; gap: 8px; white-space: nowrap; } .bar .btn-2 { flex: 1; }
+.sheet-demo { position: relative; height: 560px; background: var(--sc-paper); overflow: hidden; margin: 0 -20px; border-top: 1px solid var(--sc-line); border-bottom: 1px solid var(--sc-line); }
+.sheet-demo .under { padding: 20px; opacity: 1; }
+.scrim { position: absolute; inset: 0; background: var(--sc-scrim); }
+.sheet { position: absolute; left: 0; right: 0; bottom: 0; height: 470px; background: var(--sc-paper); border-radius: var(--sc-r-sheet); padding: 18px 20px 0; }
+.sheet .grab { width: 36px; height: 4px; border-radius: 2px; background: rgba(28,36,51,.2); position: absolute; top: 8px; left: 50%; margin-left: -18px; }
+.sheet-head { display: flex; justify-content: space-between; align-items: center; margin: 6px -10px 14px 0; }
+.sheet-head h3 { font: 400 1.5rem/1 var(--sc-serif); margin: 0; }
+.sheet .rows { display: grid; gap: 16px; }
+.sheet .done { position: absolute; left: 0; right: 0; bottom: 0; padding: 12px 20px 16px; background: var(--sc-paper); }
+
+/* stamp (reveal, DOM) */
+.stamp { width: 112px; height: 64px; border: 3px solid currentColor; border-radius: 6px; color: var(--sc-accent); opacity: .86; transform: rotate(-9deg);
+  display: grid; place-items: center; align-content: center; gap: 5px; position: relative;
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='2' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -9 7'/%3E%3C/filter%3E%3Crect width='60' height='60' filter='url(%23n)'/%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='2' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -9 7'/%3E%3C/filter%3E%3Crect width='60' height='60' filter='url(%23n)'/%3E%3C/svg%3E"); }
+.stamp::before { content: ""; position: absolute; inset: 5px; border: 1.5px solid currentColor; border-radius: 3px; }
+.stamp b { font: 700 .9375rem/1 var(--sc-sans); letter-spacing: var(--sc-track-stamp); padding-left: .18em; }
+.stamp.gold { color: var(--sc-ink); background: var(--sc-foil); border-color: var(--sc-foil-shadow); opacity: 1; }
+.stamp.gold::before { border-color: rgba(122,90,28,.7); }
+
+/* card back */
+.cardback { width: 220px; height: 275px; border-radius: 11px; background: var(--sc-accent); position: relative; overflow: hidden; flex: none;
+  background-image: repeating-linear-gradient(45deg, rgba(248,241,226,.07) 0 1px, transparent 1px 6px), repeating-linear-gradient(-45deg, rgba(248,241,226,.07) 0 1px, transparent 1px 6px); }
+.cardback::before { content: ""; position: absolute; inset: 8px; border: 1px solid rgba(248,241,226,.7); border-radius: 5px; }
+.cardback::after { content: ""; position: absolute; inset: 11px; border: 1px solid rgba(248,241,226,.35); border-radius: 3px; }
+.cardback .plate { position: absolute; left: 50%; top: 44%; width: 124px; height: 84px; transform: translate(-50%, -50%); background: var(--sc-cream);
+  -webkit-mask: radial-gradient(circle at 0 0, transparent 8px, #000 8.5px) top left / 51% 51% no-repeat, radial-gradient(circle at 100% 0, transparent 8px, #000 8.5px) top right / 51% 51% no-repeat, radial-gradient(circle at 0 100%, transparent 8px, #000 8.5px) bottom left / 51% 51% no-repeat, radial-gradient(circle at 100% 100%, transparent 8px, #000 8.5px) bottom right / 51% 51% no-repeat;
+  mask: radial-gradient(circle at 0 0, transparent 8px, #000 8.5px) top left / 51% 51% no-repeat, radial-gradient(circle at 100% 0, transparent 8px, #000 8.5px) top right / 51% 51% no-repeat, radial-gradient(circle at 0 100%, transparent 8px, #000 8.5px) bottom left / 51% 51% no-repeat, radial-gradient(circle at 100% 100%, transparent 8px, #000 8.5px) bottom right / 51% 51% no-repeat;
+  display: grid; place-items: center; font: 400 3.4rem/1 var(--sc-serif); color: var(--sc-ink); }
+.cardback .plate::after { content: ""; position: absolute; inset: 5px; border: 1px solid rgba(28,36,51,.35); border-radius: 2px; }
+.cardback .no { position: absolute; left: 0; right: 0; top: 70%; text-align: center; font: 600 .75rem/1 var(--sc-sans); letter-spacing: .2em; color: rgba(248,241,226,.8); font-variant-numeric: tabular-nums; }
+.cardback .brand { position: absolute; left: 0; right: 0; bottom: 22px; text-align: center; font: 600 .5625rem/1 var(--sc-sans); letter-spacing: .24em; color: rgba(248,241,226,.6); }
+
+/* corner mounts (binder, done) */
+.mounted { position: relative; }
+.mounted > i { position: absolute; width: var(--sc-mount); height: var(--sc-mount); background: var(--sc-mount-ink); z-index: 2; }
+.mounted > i:nth-of-type(1) { left: -3px; top: -3px; clip-path: polygon(0 0, 100% 0, 0 100%); }
+.mounted > i:nth-of-type(2) { right: -3px; top: -3px; clip-path: polygon(0 0, 100% 0, 100% 100%); }
+.mounted > i:nth-of-type(3) { left: -3px; bottom: -3px; clip-path: polygon(0 0, 100% 100%, 0 100%); }
+.mounted > i:nth-of-type(4) { right: -3px; bottom: -3px; clip-path: polygon(100% 0, 100% 100%, 0 100%); }
+.mounted.gold > i { background: var(--sc-foil); }
+.mounted.empty > i { background: none; }
+.mounted.empty > i::before { content: ""; position: absolute; inset: 0; background: var(--sc-mount-empty); }
+.mounted.empty > i:nth-of-type(1)::before { clip-path: polygon(0 0, 100% 0, calc(100% - 1.4px) 1px, 1px 1px, 1px calc(100% - 1.4px), 0 100%); }
+.mounted.empty > i:nth-of-type(2)::before { clip-path: polygon(0 0, 100% 0, 100% 100%, calc(100% - 1px) calc(100% - 1.4px), calc(100% - 1px) 1px, 1.4px 1px); }
+.mounted.empty > i:nth-of-type(3)::before { clip-path: polygon(0 0, 1px 1.4px, 1px calc(100% - 1px), calc(100% - 1.4px) calc(100% - 1px), 100% 100%, 0 100%); }
+.mounted.empty > i:nth-of-type(4)::before { clip-path: polygon(100% 0, 100% 100%, 0 100%, 1.4px calc(100% - 1px), calc(100% - 1px) calc(100% - 1px), calc(100% - 1px) 1.4px); }
+
+/* ================= SCREENS ================= */
+.screen-label { display: flex; justify-content: space-between; align-items: baseline; padding: 40px 20px 10px; border-top: 1px solid var(--sc-line-2); }
+.screen-label .b-h { margin: 0; font-size: 1.5rem; }
+.phone { position: relative; width: 390px; background: var(--sc-paper); overflow: hidden; border-top: 1px dashed var(--sc-line-2); border-bottom: 1px dashed var(--sc-line-2); }
+.phone.h844 { height: 844px; }
+.fold { position: absolute; left: 0; right: 0; height: 0; border-top: 1px dashed #b9ab90; z-index: 20; }
+.fold span { position: absolute; right: 6px; top: -16px; font: 600 .625rem/1 var(--sc-sans); letter-spacing: .1em; text-transform: uppercase; color: #9b8e74; }
+.pad { padding: 0 20px; }
+.topbar { height: var(--sc-h-topbar); display: flex; align-items: center; justify-content: space-between; padding: 0 10px 0 12px; }
+.topbar .title { font: 600 .9375rem/1 var(--sc-sans); color: var(--sc-ink-2); font-variant-numeric: var(--sc-numeric); }
+.wordmark { display: flex; align-items: center; gap: 8px; font: 400 1.25rem/1 var(--sc-serif); padding-left: 8px; color: var(--sc-ink); }
+.topbar .btn-q { padding: 0 10px; }
+
+/* landing */
+.hero { font: 400 var(--sc-fs-hero)/1 var(--sc-serif); letter-spacing: var(--sc-track-display); margin: 14px 0 10px; }
+.sub { font: 400 var(--sc-fs-sub)/1.45 var(--sc-sans); color: var(--sc-ink-2); margin: 0; max-width: 32ch; }
+.fan { position: relative; height: 368px; margin: 22px 0 18px; }
+.fan .fc { position: absolute; border-radius: 3px; box-shadow: var(--sc-shadow-print); transform-origin: 50% 100%; overflow: hidden; }
+.fan .fc canvas, [data-card] canvas, [data-story] canvas, [data-photo] canvas { width: 100%; height: 100%; display: block; }
+.fan .f1 { width: 236px; height: 295px; left: 77px; top: 44px; transform: rotate(-2deg); z-index: 3; }
+.fan .f2 { width: 188px; height: 235px; left: 31px; top: 118px; transform: rotate(-7deg); z-index: 1; }
+.fan .f3 { width: 188px; height: 235px; left: 171px; top: 122px; transform: rotate(6deg); z-index: 2; }
+.fan .aside { position: absolute; right: 16px; top: 0; font: 600 1.5rem/1 var(--sc-hand); color: var(--sc-ink-2); transform: rotate(-4deg); white-space: nowrap; }
+.fan .arrow { position: absolute; left: 140px; top: 2px; color: var(--sc-ink-2); }
+.trust { display: flex; justify-content: center; align-items: center; gap: 6px; font: 400 var(--sc-fs-small)/1.4 var(--sc-sans); color: var(--sc-ink-3); margin: 14px 0 0; }
+/* footer (kit, unchanged) */
+.site-footer { padding: 28px 16px 28px; display: grid; gap: 8px; }
+.more-from { display: flex; align-items: center; gap: 12px; margin: 0 0 4px; font-size: .9rem; font-weight: 600; font-variant-caps: all-small-caps; letter-spacing: .08em; color: var(--muted); }
+.more-from::before, .more-from::after { content: ""; flex: 1; height: 0; border-top: 4px double #d3c9b2; }
+.sib-card { display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 10px 14px; background: var(--card); border: 1px solid var(--line); border-radius: var(--radius-sm); text-decoration: none; color: var(--text); box-shadow: var(--shadow-sm); }
+.sib-card::after { content: ""; flex: none; margin-left: auto; width: 8px; height: 8px; border-right: 2px solid #a9a597; border-top: 2px solid #a9a597; transform: rotate(45deg); }
+.sib-ico { flex: none; width: 40px; height: 40px; border-radius: 12px; background: #e7edf6; color: var(--accent); display: grid; place-items: center; font: italic 600 1.45rem/1 "Iowan Old Style", "Palatino Linotype", Georgia, serif; }
+.sib-text { display: grid; line-height: 1.25; }
+.sib-text strong { font-family: "Iowan Old Style", "Palatino Linotype", Georgia, serif; font-size: 1.05rem; }
+.sib-text span { color: var(--muted); font-size: .9rem; font-style: italic; }
+
+/* kind */
+.kind-screen { display: flex; flex-direction: column; height: calc(844px - 52px); padding-bottom: 28px; }
+.kind-head h1 { font: 400 var(--sc-fs-h1)/1.1 var(--sc-serif); margin: 8px 0 6px; }
+.kind-head p { margin: 0; font: 400 var(--sc-fs-small)/1.4 var(--sc-sans); color: var(--sc-ink-3); }
+.mini-print { width: 184px; height: 254px; background: var(--sc-stock); padding: 8px 8px 26px; box-shadow: var(--sc-shadow-print); transform: rotate(-3deg); margin: auto; }
+.mini-print [data-photo] { width: 168px; height: 210px; overflow: hidden; background: #ddd; }
+
+
+/* result */
+.res-card { width: 310px; height: 388px; margin: 8px auto 0; border-radius: var(--sc-r-card); box-shadow: var(--sc-shadow-print); overflow: hidden; }
+.sec-rule { border-top: 1px solid var(--sc-line); margin: 24px 0 20px; }
+.h2 { font: 400 var(--sc-fs-h2)/1.2 var(--sc-serif); margin: 0 0 12px; }
+.bar-abs { position: absolute; left: 0; right: 0; bottom: 0; z-index: 10; }
+
+/* binder */
+.bind-head { padding: 6px 20px 0; }
+.bind-head h1 { font: 400 1.875rem/1.1 var(--sc-serif); margin: 0 0 6px; font-variant-numeric: lining-nums; }
+.bind-head h1 em { font-style: normal; color: var(--sc-gold-ink); }
+.bind-head p { margin: 0; font: 400 .875rem/1.4 var(--sc-sans); color: var(--sc-ink-2); font-variant-numeric: var(--sc-numeric); }
+.album { position: relative; margin: 16px 0 0; padding: 26px 20px 30px 30px; background: var(--sc-album); background-image: var(--sc-binding), var(--sc-grain-album);
+  border-top: 1px solid #e0d6c2; border-bottom: 1px solid #e0d6c2; }
+.album .hole { position: absolute; left: 9px; width: 10px; height: 10px; border-radius: 50%; background: var(--sc-paper); box-shadow: var(--sc-shadow-hole); }
+.album-grid { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 14px; row-gap: 22px; }
+.slot { display: grid; gap: 7px; }
+.slot .ph { aspect-ratio: 4 / 5; }
+.slot .ph > div { width: 100%; height: 100%; border-radius: 2px; overflow: hidden; box-shadow: var(--sc-shadow-thumb); }
+.slot.golden .ph > div { box-shadow: 0 0 0 2px #c9a24f, var(--sc-shadow-thumb); }
+.slot .cap { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; padding: 0 1px; }
+.slot .cap b { font: 600 1.125rem/1 var(--sc-hand); color: var(--sc-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.slot .cap span { font: 500 .6875rem/1 var(--sc-sans); color: var(--sc-ink-3); font-variant-numeric: var(--sc-numeric); white-space: nowrap; display: inline-flex; gap: 3px; align-items: center; }
+.slot .cap .gstar { color: var(--sc-gold-ink); }
+.slot.empty .ph { position: relative; display: grid; place-items: center; }
+.slot.empty .pencil { font: 600 1.375rem/1 var(--sc-hand); color: rgba(28,36,51,.32); }
+.bind-note { text-align: center; font: 400 var(--sc-fs-small)/1.4 var(--sc-sans); color: var(--sc-ink-3); margin: 16px 30px 0; }
+
+/* card showcase */
+.cards-sec { padding: 40px 0 8px; border-top: 1px solid var(--sc-line-2); }
+.cards-sec .b-k, .cards-sec .b-h, .cards-sec .b-p { padding: 0 20px; }
+.showcase { width: 350px; height: 437.5px; margin: 6px auto 0; box-shadow: var(--sc-shadow-print); border-radius: 2px; overflow: hidden; }
+.museum-label { margin: 14px 20px 34px; display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; padding: 10px 0 0; border-top: 1px solid var(--sc-line-2); }
+.museum-label strong { font: 400 1.125rem/1.2 var(--sc-serif); }
+.museum-label span { font: 500 .75rem/1.5 var(--sc-sans); color: var(--sc-ink-3); }
+.museum-label p { grid-column: 1 / -1; margin: 2px 0 0; font-size: .8125rem; line-height: 1.45; color: var(--sc-ink-2); }
+
+.end { padding: 28px 20px 48px; border-top: 1px solid var(--sc-line-2); font-size: .8125rem; color: var(--sc-ink-3); }
+</style>
+</head>
+<body>
+
+<!-- ======================= 01 CONCEPT ======================= -->
+<header class="cover">
+  <p class="b-k"><span>Spotted a cutie · design board</span><span class="num">M0 · 9 Oct 2026</span></p>
+  <h1>The Footpath Museum</h1>
+  <p class="idea">Every street animal you pass gets catalogued with the straight face of a natural-history museum. The only unserious thing is the label.</p>
+  <dl class="label-card">
+    <dt>Object</dt><dd>A numbered specimen card, filed in an album</dd>
+    <dt>Locality</dt><dd>The footpath, a scooter seat, a balcony rail</dd>
+    <dt>Manner</dt><dd>Serious object, silly label</dd>
+    <dt>Collector</dt><dd>You, for one friend</dd>
+  </dl>
+  <ol class="refs">
+    <li>Tea and cigarette cards: “No. 14 of 50”, three inks, cream borders</li>
+    <li>Museum labels and herbarium sheets: locality, date, a red accession number</li>
+    <li>Drugstore photo albums: corner mounts, ballpoint captions</li>
+    <li>Rubber stamps and postmarks: tilted, speckled, double-ruled</li>
+    <li>Risograph zines: muted inks, a hair of misregistration</li>
+  </ol>
+  <span class="aside">the joke is in the words, never the chrome</span>
+</header>
+
+<!-- ======================= 02 PALETTE ======================= -->
+<section class="b-sec">
+  <p class="b-k"><b>02</b> Palette</p>
+  <h2 class="b-h">One paper, one ink, one accent, one gold</h2>
+  <div class="ratio"><span style="flex:70;background:#f6f2ea"></span><span style="flex:20;background:#1c2433"></span><span style="flex:8;background:#1f3a5f"></span><span style="flex:2;background:var(--sc-foil)"></span></div>
+  <div class="ratio-k"><span>paper 70%</span><span>ink 20%</span><span>accent 8%</span><span>gold ≤ 2%</span></div>
+  <p class="b-sub">The site</p>
+  <div class="sw-grid">
+    <div class="sw"><i style="background:#f6f2ea"></i><div><strong>Paper</strong><code>#f6f2ea</code> · the page</div></div>
+    <div class="sw"><i style="background:#fffdf8"></i><div><strong>Stock</strong><code>#fffdf8</code> · fields, tiles, chips</div></div>
+    <div class="sw"><i style="background:#efe8da"></i><div><strong>Album</strong><code>#efe8da</code> · binder page only</div></div>
+    <div class="sw"><i style="background:#cbbfa8"></i><div><strong>Line 2</strong><code>#cbbfa8</code> · borders · line <code>#e6dfd1</code></div></div>
+    <div class="sw"><i style="background:#1c2433"></i><div><strong>Ink</strong><code>#1c2433</code> · 13.9 : 1</div></div>
+    <div class="sw"><i style="background:#3a4252"></i><div><strong>Ink 2</strong><code>#3a4252</code> · 9.0 : 1</div></div>
+    <div class="sw"><i style="background:#5f5c55"></i><div><strong>Ink 3</strong><code>#5f5c55</code> · 6.0 : 1 (overrides --muted)</div></div>
+    <div class="sw"><i style="background:#1f3a5f"></i><div><strong>Ink-blue</strong><code>#1f3a5f</code> · accent, the sender’s pen</div></div>
+    <div class="sw"><i style="background:#e7edf6"></i><div><strong>Accent soft</strong><code>#e7edf6</code> · pressed, focus</div></div>
+    <div class="sw"><i class="foil-chip"></i><div><strong>Foil</strong><code>#b8913f</code> · golden only · text <code>#8a6420</code></div></div>
+  </div>
+  <p class="b-sub">Kind inks · cards, tabs, story backgrounds only</p>
+  <div class="kinds">
+    <div class="kind-ink" style="background:#9a5f22"><b>Cat</b><span>Burnt ochre · 4.6</span></div>
+    <div class="kind-ink" style="background:#2f6a68"><b>Dog</b><span>Bottle teal · 5.5</span></div>
+    <div class="kind-ink" style="background:#4f5d6e"><b>Pigeon</b><span>Slate · 6.0</span></div>
+    <div class="kind-ink" style="background:#2a2b33"><b>Crow</b><span>Blue-black · 12.5</span></div>
+    <div class="kind-ink" style="background:#4c6b3c"><b>Cow</b><span>Moss · 5.4</span></div>
+    <div class="kind-ink" style="background:#9b4a2c"><b>Squirrel</b><span>Rust · 5.5</span></div>
+    <div class="kind-ink" style="background:#3c6e8f"><b>Bird</b><span>Dusty cerulean · 4.9</span></div>
+    <div class="kind-ink" style="background:#6e3b55"><b>Monkey</b><span>Plum · 7.7</span></div>
+    <div class="kind-ink" style="background:#5a4e7c"><b>Mystery</b><span>Aubergine · 6.6</span></div>
+  </div>
+  <p class="b-note">Numbers are cream-on-ink contrast. No primaries; tiles in the UI never take a kind colour.</p>
+</section>
+
+<!-- ======================= 03 TYPE ======================= -->
+<section class="b-sec">
+  <p class="b-k"><b>03</b> Type</p>
+  <h2 class="b-h">Three faces on a screen, never four</h2>
+  <div class="spec"><div class="meta"><span>DM Serif Display 400 · hero</span><span>45.6 / 1.0</span></div><div class="t-hero">Spotted a cutie?</div></div>
+  <div class="spec"><div class="meta"><span>DM Serif Display · the name spin</span><span>52</span></div><div class="t-name">Larry</div></div>
+  <div class="spec"><div class="meta"><span>DM Serif Display Italic · titles</span><span>24</span></div><div class="t-ital">Feline, menace class</div></div>
+  <div class="spec"><div class="meta"><span>System sans · body, buttons, fields</span><span>16 / 1.5</span></div><div class="t-body">Snap any street cat, dog or pigeon. Find out who they really are.</div>
+    <div class="t-label" style="margin-top:10px">Who’s this for? · label 12, +0.1em</div></div>
+  <div class="spec"><div class="meta"><span>Caveat 600 · one aside per screen</span><span>30</span></div><div class="t-hand">Meet…</div></div>
+  <div class="spec"><div class="meta"><span>League Gothic · <span class="card-only">card images only</span></span><span>tracked caps</span></div>
+    <div class="t-gothic">WANTED · CHAOS 90</div>
+    <div class="t-gothic-sm" style="margin-top:8px">#014 · SPOTTED-A-CUTIE.VERCEL.APP</div></div>
+  <p class="b-note">Curly quotes “ ” ‘ ’, a real ellipsis …, a middle dot with spaces, en dash 10–100, × for “seen ×4”. Numbers tabular on screen; on cards each digit sits in a fixed cell.</p>
+</section>
+
+<!-- ======================= 04 ICONS ======================= -->
+<section class="b-sec">
+  <p class="b-k"><b>04</b> Icons</p>
+  <h2 class="b-h">One drawn set. Profiles, no faces.</h2>
+  <div class="icon-grid" id="icon-gallery"></div>
+  <p class="b-sub">Kind tiles · 40 px, stroke 1.4</p>
+  <div class="icon-big">
+    <div data-icon="cat" data-size="40" data-sw="1.4"></div><div data-icon="dog" data-size="40" data-sw="1.4"></div><div data-icon="pigeon" data-size="40" data-sw="1.4"></div>
+    <div data-icon="crow" data-size="40" data-sw="1.4"></div><div data-icon="cow" data-size="40" data-sw="1.4"></div><div data-icon="squirrel" data-size="40" data-sw="1.4"></div>
+    <div data-icon="monkey" data-size="40" data-sw="1.4"></div><div data-icon="bird" data-size="40" data-sw="1.4"></div><div data-icon="mystery" data-size="40" data-sw="1.4"></div>
+  </div>
+  <p class="b-note">24 × 24, stroke 1.75, round caps and joins. Fills only for the die’s pips, the pin’s dot and the question mark’s dot.</p>
+</section>
+
+<!-- ======================= 05 COMPONENTS ======================= -->
+<section class="b-sec">
+  <p class="b-k"><b>05</b> Components</p>
+  <h2 class="b-h">Quiet parts, so the cards can be loud</h2>
+
+  <p class="state">Primary · rest / pressed / busy</p>
+  <div class="stack">
+    <button class="btn"><span data-icon="camera" data-size="22"></span>Snap a cutie</button>
+    <button class="btn is-pressed"><span data-icon="camera" data-size="22"></span>Snap a cutie</button>
+    <button class="btn"><span class="spin"></span>Send</button>
+  </div>
+  <p class="state">Secondary · rest / pressed</p>
+  <div class="row">
+    <button class="btn btn-2"><span data-icon="photos" data-size="22"></span>Pick a photo</button>
+    <button class="btn btn-2 is-pressed" style="width:auto;flex:none;padding:0 20px"><span data-icon="save" data-size="22"></span>Save</button>
+  </div>
+  <p class="state">Quiet (optional, never greyed) · icon buttons</p>
+  <div class="row" style="justify-content:space-between">
+    <button class="btn-q"><span data-icon="story" data-size="20"></span><u>Story size</u></button>
+    <button class="btn-q is-pressed"><span data-icon="binder" data-size="20"></span><u>My cuties</u></button>
+    <div class="row" style="gap:2px"><button class="ibtn"><span data-icon="back"></span></button><button class="ibtn is-pressed"><span data-icon="close"></span></button></div>
+  </div>
+
+  <p class="state">Style chips · rest / pressed / selected</p>
+  <div class="chips-scroll">
+    <span class="chip"><i class="mini minimal"></i>Minimal</span>
+    <span class="chip is-sel"><i class="mini trading"></i>Trading card</span>
+    <span class="chip is-pressed"><i class="mini polaroid"></i>Polaroid</span>
+    <span class="chip"><i class="mini wanted"></i>Wanted</span>
+    <span class="chip"><i class="mini dating"></i>Dating</span>
+    <span class="chip"><i class="mini news"></i>Breaking news</span>
+  </div>
+  <p class="state">Reason chips</p>
+  <div class="chips-wrap">
+    <span class="chip plain is-sel">Found your twin</span><span class="chip plain">Says hi</span><span class="chip plain">Your replacement</span>
+  </div>
+
+  <p class="state">Kind tiles · rest / pressed / selected</p>
+  <div class="tiles">
+    <div class="tile"><span class="no">01</span><span data-icon="cat" data-size="40" data-sw="1.4"></span><span class="lab">Cat</span></div>
+    <div class="tile is-pressed"><span class="no">02</span><span data-icon="dog" data-size="40" data-sw="1.4"></span><span class="lab">Dog</span></div>
+    <div class="tile is-sel"><span class="no">03</span><span data-icon="pigeon" data-size="40" data-sw="1.4"></span><span class="lab">Pigeon</span></div>
+  </div>
+
+  <p class="state">Tools · rest / pressed</p>
+  <div class="tools">
+    <div class="tool"><span data-icon="dice" data-size="22"></span>New name</div>
+    <div class="tool is-pressed"><span data-icon="dice" data-size="22" style="transform:rotate(180deg)"></span>New personality</div>
+    <div class="tool"><span data-icon="pencil" data-size="22"></span>Edit words</div>
+    <div class="tool"><span data-icon="crop" data-size="22"></span>Adjust photo</div>
+  </div>
+
+  <p class="state">Text field · empty / focused / at the limit</p>
+  <div class="stack">
+    <div class="field has-ico"><span class="ico" data-icon="pin" data-size="18"></span><span class="ph">on a scooter seat</span><span class="count">0/32</span></div>
+    <div class="field is-focus"><span>Priya</span><span class="caret"></span><span class="count">5/16</span></div>
+    <div class="field is-limit"><span>Bartholomew-Snugglesw</span><span class="count">16/16</span></div>
+  </div>
+
+  <p class="state">Bottom sheet · Edit words</p>
+  <div class="sheet-demo">
+    <div class="under"><div class="res-card" style="width:240px;height:300px;margin:0 auto" data-card="larry"></div></div>
+    <div class="scrim"></div>
+    <div class="sheet">
+      <span class="grab"></span>
+      <div class="sheet-head"><h3>Edit words</h3><button class="ibtn"><span data-icon="close"></span></button></div>
+      <div class="rows">
+        <div><span class="field-l">Name</span><div class="field-row"><div class="field"><span>Larry</span><span class="count">5/20</span></div><button class="die-btn"><span data-icon="dice" data-size="22"></span></button></div></div>
+        <div><span class="field-l">Title</span><div class="field-row"><div class="field"><span>Feline, menace class</span></div><button class="die-btn"><span data-icon="dice" data-size="22"></span></button></div></div>
+        <div><span class="field-l">Card quote</span><div class="field-row"><div class="field"><span style="white-space:nowrap;overflow:hidden;text-overflow:ellipsis">Owns the street. Pays no rent.</span></div><button class="die-btn"><span data-icon="dice" data-size="22"></span></button></div></div>
+      </div>
+      <div class="done"><button class="btn"><span data-icon="check" data-size="22"></span>Done</button></div>
+    </div>
+  </div>
+
+  <p class="state">Sticky bar</p>
+  <div class="bar" style="margin:0 -20px"><button class="btn"><span data-icon="share" data-size="22"></span>Send</button><button class="btn btn-2"><span data-icon="save" data-size="22"></span>Save image</button></div>
+
+  <p class="state">The reveal: card back and stamps · common / golden</p>
+  <div class="row" style="align-items:flex-start;gap:18px">
+    <div class="cardback"><div class="plate">?</div><div class="no">#015</div><div class="brand">SPOTTED A CUTIE</div></div>
+    <div style="display:grid;gap:28px;padding-top:28px">
+      <div class="stamp"><b>COMMON</b><svg width="10" height="10" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="currentColor"/></svg></div>
+      <div class="stamp gold"><b>GOLDEN</b><svg width="12" height="12" viewBox="0 0 24 24"><path d="M12 2.5l2.7 6.4 6.8.5-5.2 4.4 1.7 6.7L12 16.9l-6 3.6 1.7-6.7-5.2-4.4 6.8-.5z" fill="currentColor"/></svg></div>
+    </div>
+  </div>
+  <p class="b-note">The stamp lands once with the site’s only overshoot (cubic-bezier .2, 1.3, .4, 1, 220 ms). The golden one gets a ray ring and one shimmer, no particles.</p>
+</section>
+
+<!-- ======================= 06 SCREENS ======================= -->
+<div class="screen-label"><h2 class="b-h">Landing</h2><span class="b-k" style="margin:0">390 × 844</span></div>
+<div class="phone">
+  <div class="fold" style="top:844px"><span>fold · 844</span></div>
+  <div class="topbar">
+    <div class="wordmark"><svg width="22" height="14" viewBox="0 0 22 14" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M3 1h16a2 2 0 0 1 2 2v1.6a2.4 2.4 0 0 0 0 4.8V11a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9.4a2.4 2.4 0 0 0 0-4.8V3a2 2 0 0 1 2-2Z"/></svg>Spotted a cutie</div>
+    <button class="btn-q"><span data-icon="binder" data-size="20"></span><u>My cuties <span class="num">(6)</span></u></button>
+  </div>
+  <div class="pad">
+    <h1 class="hero">Spotted a cutie?</h1>
+    <p class="sub">Snap any street cat, dog or pigeon. Find out who they really are.</p>
+  </div>
+  <div class="fan">
+    <span class="aside">real cats. fake names.</span>
+    <svg class="arrow" width="48" height="40" viewBox="0 0 48 40" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M45 12C32 7 18 12 12 33"/><path d="M7.5 27 12 34l6.5-5"/></svg>
+    <div class="fc f2" data-card="mochi"></div>
+    <div class="fc f3" data-card="bruno"></div>
+    <div class="fc f1" data-card="larry"></div>
+  </div>
+  <div class="pad stack">
+    <button class="btn"><span data-icon="camera" data-size="22"></span>Snap a cutie</button>
+    <button class="btn btn-2"><span data-icon="photos" data-size="22"></span>Pick a photo</button>
+  </div>
+  <p class="trust"><span data-icon="lock" data-size="14"></span>Free. No account. Your photos stay on your phone.</p>
+  <footer class="site-footer">
+    <p class="more-from">More from Risheek</p>
+    <a class="sib-card"><span class="sib-ico">Aa</span><span class="sib-text"><strong>Handwriting → Font</strong><span>Type in your own handwriting.</span></span></a>
+    <a class="sib-card"><span class="sib-ico"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18h10a4 4 0 0 0 .6-7.95A5.5 5.5 0 0 0 7.1 9.6 4.2 4.2 0 0 0 7 18z"/></svg></span><span class="sib-text"><strong>Look Up</strong><span>Saw a shape in the clouds? Send it to someone.</span></span></a>
+  </footer>
+</div>
+
+<div class="screen-label"><h2 class="b-h">Kind</h2><span class="b-k" style="margin:0">Who did you spot?</span></div>
+<div class="phone h844">
+  <div class="topbar"><button class="ibtn"><span data-icon="back"></span></button><span></span><span style="width:44px"></span></div>
+  <div class="pad kind-screen">
+    <div class="kind-head"><h1>Who did you spot?</h1><p>Tap what it is. We’ll handle the paperwork.</p></div>
+    <div class="mini-print"><div data-photo="larry"></div></div>
+    <div class="tiles">
+      <div class="tile"><span class="no">01</span><span data-icon="cat" data-size="40" data-sw="1.4"></span><span class="lab">Cat</span></div>
+      <div class="tile"><span class="no">02</span><span data-icon="dog" data-size="40" data-sw="1.4"></span><span class="lab">Dog</span></div>
+      <div class="tile"><span class="no">03</span><span data-icon="pigeon" data-size="40" data-sw="1.4"></span><span class="lab">Pigeon</span></div>
+      <div class="tile"><span class="no">04</span><span data-icon="crow" data-size="40" data-sw="1.4"></span><span class="lab">Crow</span></div>
+      <div class="tile"><span class="no">05</span><span data-icon="cow" data-size="40" data-sw="1.4"></span><span class="lab">Cow</span></div>
+      <div class="tile"><span class="no">06</span><span data-icon="squirrel" data-size="40" data-sw="1.4"></span><span class="lab">Squirrel</span></div>
+      <div class="tile"><span class="no">07</span><span data-icon="monkey" data-size="40" data-sw="1.4"></span><span class="lab">Monkey</span></div>
+      <div class="tile"><span class="no">08</span><span data-icon="bird" data-size="40" data-sw="1.4"></span><span class="lab">Other bird</span></div>
+      <div class="tile"><span class="no">09</span><span data-icon="mystery" data-size="40" data-sw="1.4"></span><span class="lab">Something else</span></div>
+    </div>
+  </div>
+</div>
+
+<div class="screen-label"><h2 class="b-h">Result</h2><span class="b-k" style="margin:0">above the fold</span></div>
+<div class="phone h844">
+  <div class="topbar"><button class="ibtn"><span data-icon="back"></span></button><span class="title">Cutie #001</span><button class="ibtn"><span data-icon="binder"></span></button></div>
+  <div class="res-card" data-card="larry"></div>
+  <div class="pad">
+    <div class="chips-scroll" style="margin-top:16px">
+      <span class="chip"><i class="mini minimal"></i>Minimal</span>
+      <span class="chip is-sel"><i class="mini trading"></i>Trading card</span>
+      <span class="chip"><i class="mini polaroid"></i>Polaroid</span>
+      <span class="chip"><i class="mini wanted"></i>Wanted</span>
+    </div>
+    <div class="tools" style="margin-top:12px">
+      <div class="tool"><span data-icon="dice" data-size="22"></span>New name</div>
+      <div class="tool"><span data-icon="dice" data-size="22"></span>New personality</div>
+      <div class="tool"><span data-icon="pencil" data-size="22"></span>Edit words</div>
+      <div class="tool"><span data-icon="crop" data-size="22"></span>Adjust photo</div>
+    </div>
+    <div class="sec-rule"></div>
+    <h2 class="h2">Where did you spot them?</h2>
+    <div class="field has-ico"><span class="ico" data-icon="pin" data-size="18"></span><span class="ph">on a scooter seat</span><span class="count">0/32</span></div>
+    <div class="sec-rule"></div>
+    <h2 class="h2">Who’s this for?</h2>
+  </div>
+  <div class="bar bar-abs"><button class="btn"><span data-icon="share" data-size="22"></span>Send</button><button class="btn btn-2"><span data-icon="save" data-size="22"></span>Save image</button></div>
+</div>
+
+<div class="screen-label"><h2 class="b-h">Binder</h2><span class="b-k" style="margin:0">My cuties</span></div>
+<div class="phone">
+  <div class="topbar"><button class="ibtn"><span data-icon="back"></span></button><span class="title">My cuties</span><span style="width:44px"></span></div>
+  <div class="bind-head">
+    <h1>6 cuties spotted<em> · 1 golden</em></h1>
+    <p>2 cats · 2 dogs · 1 pigeon · 1 cow</p>
+  </div>
+  <div class="album">
+    <span class="hole" style="top:15%"></span><span class="hole" style="top:50%"></span><span class="hole" style="top:85%"></span>
+    <div class="album-grid">
+      <div class="slot"><div class="ph mounted"><i></i><i></i><i></i><i></i><div data-card="larry"></div></div><div class="cap"><b>Larry</b><span>#001</span></div></div>
+      <div class="slot"><div class="ph mounted"><i></i><i></i><i></i><i></i><div data-card="mochi"></div></div><div class="cap"><b>Mochi</b><span>#002</span></div></div>
+      <div class="slot"><div class="ph mounted"><i></i><i></i><i></i><i></i><div data-card="pickle"></div></div><div class="cap"><b>Sir Pickle</b><span>#003</span></div></div>
+      <div class="slot"><div class="ph mounted"><i></i><i></i><i></i><i></i><div data-card="bimla"></div></div><div class="cap"><b>Auntie Bimla</b><span>#004</span></div></div>
+      <div class="slot golden"><div class="ph mounted gold"><i></i><i></i><i></i><i></i><div data-card="kevin"></div></div><div class="cap"><b>Kevin</b><span><svg class="gstar" width="9" height="9" viewBox="0 0 24 24"><path d="M12 2.5l2.7 6.4 6.8.5-5.2 4.4 1.7 6.7L12 16.9l-6 3.6 1.7-6.7-5.2-4.4 6.8-.5z" fill="currentColor"/></svg>#005</span></div></div>
+      <div class="slot"><div class="ph mounted"><i></i><i></i><i></i><i></i><div data-card="bruno"></div></div><div class="cap"><b>Bruno</b><span>#006</span></div></div>
+      <div class="slot empty"><div class="ph mounted empty"><i></i><i></i><i></i><i></i><span class="pencil">7</span></div></div>
+      <div class="slot empty"><div class="ph mounted empty"><i></i><i></i><i></i><i></i><span class="pencil">8</span></div></div>
+      <div class="slot empty"><div class="ph mounted empty"><i></i><i></i><i></i><i></i><span class="pencil">9</span></div></div>
+    </div>
+  </div>
+  <p class="bind-note">Your cuties live on this phone only. Clearing your browser clears them.</p>
+  <div style="height:28px"></div>
+</div>
+
+<!-- ======================= 07 CARDS ======================= -->
+<section class="cards-sec">
+  <p class="b-k"><b>07</b> Cards · drawn from SC.PALETTE on real photos</p>
+  <h2 class="b-h">Six objects, one collection</h2>
+  <p class="b-p">The shared signature: the notched accession tag with the rarity mark and #number, the address beside it, the personal line in ink-blue.</p>
+
+  <div class="showcase" data-card="larry"></div>
+  <div class="museum-label"><strong>Trading card · the tea card (revised)</strong><span class="num">#001 · common</span>
+    <p>Two inks on card stock: the kind ink fills the card inside a printed cream border; a second spot ink (teal for cats) on the ribbon and the damage. Series line, an ink-stamped stat, one move. Nothing under 30 px.</p></div>
+
+  <div class="showcase" data-card="coo"></div>
+  <div class="museum-label"><strong>Trading card · for Priya</strong><span class="num">#014 · slate + brick</span>
+    <p>The far-away balcony pigeon, zoomed 2.6×. The personal line replaces the card quote, in the sender’s ink-blue.</p></div>
+
+  <div class="showcase" data-card="kevin"></div>
+  <div class="museum-label"><strong>Trading card · golden</strong><span class="num">#005 · 1 in 20</span>
+    <p>The inked field becomes foil inside the cream border: one ramp, three light bands, brushed hairlines. GOLDEN on the ribbon, a foil star on the photo corner, a foil tag.</p></div>
+
+  <p class="b-k" style="margin-top:6px">Real sizes · result screen, 310 px</p>
+  <div class="showcase" style="width:310px;height:387.5px" data-card="larry"></div>
+  <div class="museum-label"><strong>At 310 px</strong><span class="num">1 : 3.5</span>
+    <p>Smallest card text is 30 px on the card, about 8.6 px here: the move, the bottom row and the quote read; the name and stat read at arm’s length.</p></div>
+
+  <p class="b-k">Real sizes · the story, as seen on a phone (390 wide)</p>
+  <div class="showcase" style="width:390px;height:693px;border-radius:0;box-shadow:none" data-story="larry"></div>
+  <div class="museum-label"><strong>Story 1080 × 1920</strong><span class="num">card 900 × 1125</span>
+    <p>Dark kind-ink backdrop with the engraved hatch, the card at −2°, the caption in cream Caveat.</p></div>
+
+  <div class="showcase" data-card="mochi"></div>
+  <div class="museum-label"><strong>Polaroid · the journal page</strong><span class="num">#002 · for Priya</span>
+    <p>An instant print taped into a dot-grid journal. The personal line is the second caption line, in the sender’s ink-blue, with a drawn heart.</p></div>
+
+  <div class="showcase" data-card="bruno"></div>
+  <div class="museum-label"><strong>Wanted · the handbill</strong><span class="num">#006 · for Priya</span>
+    <p>Letterpress on aged paper, sepia photo. The return stamp is ink-blue on sepia: it reads as added later, by you.</p></div>
+
+  <div class="showcase" data-card="bimla"></div>
+  <div class="museum-label"><strong>Wanted · plain</strong><span class="num">#004 · uncommon</span>
+    <p>The busy Madurai street behind the cow goes quiet in the sepia ramp; the face carries the poster.</p></div>
+</section>
+
+<div class="end">design/board.html · never deployed · fonts: DM Serif Display, League Gothic, Caveat (OFL) · photos: assets/sample, tests/real</div>
+
+<script src="../src/engine/palette.js"></script>
+<script src="board.js"></script>
+</body>
+</html>

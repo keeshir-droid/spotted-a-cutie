@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>art-director palette check (never deployed)</title>
+<style>
+  body { margin: 0; padding: 10px; background: #dcd6c8; font: 12px/1.3 system-ui, sans-serif; color: #1c2433; width: 780px; }
+  .grid { display: grid; grid-template-columns: 380px 380px; gap: 10px; }
+  figure { margin: 0; } canvas { display: block; width: 380px; height: 475px; }
+  figcaption { margin: 2px 0 6px; }
+  .zoom canvas { width: 760px; height: auto; }
+  .zoom { grid-column: 1 / -1; }
+</style>
+</head>
+<body>
+<div class="grid" id="out"></div>
+<script src="../src/engine/util.js"></script>
+<script src="../src/engine/palette.js"></script>
+<script src="../src/engine/decode.js"></script>
+<script src="../src/engine/content-data.js"></script>
+<script src="../src/engine/content.js"></script>
+<script src="../src/engine/photo.js"></script>
+<script src="../src/engine/grade.js"></script>
+<script src="../src/engine/art.js"></script>
+<script src="../src/engine/text.js"></script>
+<script src="../src/engine/styles.js"></script>
+<script src="../src/engine/card.js"></script>
+<script>
+/* Renders the M1 problem cases with the real engine and the current SC.PALETTE.
+   Golden Wanted SIMULATES the proposed engine hook: while it renders, SC.PALETTE.foil is swapped for
+   styles.wanted.golden.foil and slots.wanted.dropout for golden.wordDropout. */
+var out = document.getElementById("out");
+var P = SC.PALETTE;
+var TUNED = { "01": { cx: 0.5, cy: 0.35, zoom: 1 }, "02": { cx: 0.62, cy: 0.45, zoom: 1.3 }, "03": { cx: 0.5, cy: 0.4, zoom: 1.2 },
+  "06": { cx: 0.45, cy: 0.70, zoom: 3 }, "08": { cx: 0.6, cy: 0.55, zoom: 1.3 } };
+var FILES = { "01": "01-cat-scooter-mumbai.jpg", "02": "02-cat-street-mumbai.jpg", "03": "03-cat-tabby-west-bengal.jpg", "06": "06-pigeon-balcony-taxila.jpg", "08": "08-cow-street-madurai.jpg" };
+var KIND = { "01": "cat", "02": "cat", "03": "cat", "06": "pigeon", "08": "cow" };
+function load(file) {
+  return new Promise(function (res, rej) {
+    var img = new Image();
+    img.onload = function () {
+      var k = Math.min(1, 1600 / Math.max(img.naturalWidth, img.naturalHeight));
+      var c = document.createElement("canvas"); c.width = Math.round(img.naturalWidth * k); c.height = Math.round(img.naturalHeight * k);
+      var x = c.getContext("2d"); x.drawImage(img, 0, 0, c.width, c.height);
+      res(SC.photo.from(x.getImageData(0, 0, c.width, c.height)));
+    };
+    img.onerror = rej; img.src = "../tests/real/" + file;
+  });
+}
+function add(cv, caption, cls) {
+  var f = document.createElement("figure"); if (cls) f.className = cls;
+  var c = document.createElement("canvas"); c.width = cv.width; c.height = cv.height; c.getContext("2d").drawImage(cv, 0, 0);
+  f.appendChild(c); var fc = document.createElement("figcaption"); fc.textContent = caption; f.appendChild(fc); out.appendChild(f);
+}
+async function card(id, style, o) {
+  o = o || {};
+  var photo = await load(FILES[id]), seed = SC.util.hash(FILES[id]);
+  SC.content.resetSession();
+  var traits = SC.content.generate(KIND[id], { seed: seed, memory: false });
+  if (o.reward) traits.reward = o.reward;
+  return SC.card.create({ photo: photo, crop: TUNED[id], kind: KIND[id], traits: traits, style: style, golden: !!o.golden, number: 14,
+    place: o.place || "", to: o.to ? { name: o.to, reason: o.reason || "twin" } : null, when: Date.UTC(2026, 9, 9, 12), seed: seed });
+}
+function renderGoldenWanted(c, scale) {
+  var keepFoil = P.foil, keepDrop = P.styles.wanted.slots.wanted.dropout, g = P.styles.wanted.golden;
+  P.foil = g.foil; P.styles.wanted.slots.wanted.dropout = g.wordDropout;
+  try { return c.render(scale, "card"); } finally { P.foil = keepFoil; P.styles.wanted.slots.wanted.dropout = keepDrop; }
+}
+(async function () {
+  await SC.text.ready();
+  var LONG = "exposure (they’ll tell their friends)";
+  var ids = (new URLSearchParams(location.search).get("part") || "news") === "news";
+  if (ids) {
+    for (var id of ["01", "08", "02", "03", "06"]) add((await card(id, "news")).render(0.5, "card"), id + " news");
+    var cow = await card("08", "news"); add(cow.render(1, "card"), "08 news at scale 1 (detail)", "zoom");
+  } else {
+    add((await card("01", "wanted", { to: "Priya", reason: "twin", reward: LONG, place: "outside the bakery at closing time" })).render(0.5, "card"), "01 wanted, personal, longest reward");
+    add((await card("08", "wanted", { to: "Bartholomew", reason: "soulmate", reward: "a slice of toast, lightly buttered" })).render(0.5, "card"), "08 wanted, personal, long name");
+    add(renderGoldenWanted(await card("01", "wanted", { golden: true, to: "Priya", reward: LONG }), 0.5), "01 wanted GOLDEN (deeper foil, simulated hook)");
+    add((await card("01", "wanted", { golden: true })).render(0.5, "card"), "01 wanted GOLDEN, current engine (standard foil)");
+    add(renderGoldenWanted(await card("08", "wanted", { golden: true }), 1), "08 wanted GOLDEN scale 1 (detail)", "zoom");
+  }
+  document.documentElement.classList.add("ready");
+})().catch(function (e) { document.body.insertAdjacentHTML("afterbegin", "<pre style='color:#a33a2b'>" + (e.stack || e) + "</pre>"); });
+</script>
+</body>
+</html>

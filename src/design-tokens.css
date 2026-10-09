@@ -1,0 +1,180 @@
+/* src/design-tokens.css: Spotted a Cutie's own tokens ("The Footpath Museum", see DESIGN.md).
+   Owner: art-director. Load AFTER the family tokens (shared-kit/tokens.css, copied into styles.css)
+   and BEFORE the component styles. Variables and @font-face only: no component styles here.
+
+   One paper, one ink, one accent, one special:
+     paper/stock ~70% of a screen · ink ~20% · accent (ink-blue) ~8% · gold 0% (golden cards only, <= 2%).
+   The photos and the cards carry the colour. The UI stays quieter than both. */
+
+/* ---------- fonts (self-hosted, OFL; licences in fonts/OFL-*.txt) ---------- */
+@font-face {
+  font-family: "Caveat";
+  src: url("../fonts/caveat-600.woff2") format("woff2");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "DM Serif Display";
+  src: url("../fonts/dm-serif-display-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "DM Serif Display";
+  src: url("../fonts/dm-serif-display-400-italic.woff2") format("woff2");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+/* League Gothic is for card images only (drawn on canvas). It is declared here so the
+   canvas can use it once loaded; it must never be used in the screen UI. */
+@font-face {
+  font-family: "League Gothic";
+  src: url("../fonts/league-gothic-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: block;
+}
+
+:root {
+  /* ---------- the one family override ----------
+     --muted #6c6a64 is 4.8:1 on paper: too faint in sunlight. This site's ink-3 is 6.0:1. */
+  --muted: #5f5c55;
+
+  /* ---------- colour: the site (UI) ---------- */
+  --sc-paper: #f6f2ea;        /* the page (= family --bg) */
+  --sc-stock: #fffdf8;        /* fields, tiles, chips, sheet rows (= family --card) */
+  --sc-album: #efe8da;        /* the binder's album page only */
+  --sc-album-hole: #e2d8c4;   /* punched holes in the album page */
+  --sc-ink: #1c2433;          /* text, icons (13.9:1 on paper) */
+  --sc-ink-2: #3a4252;        /* softer text, Caveat asides (9.0:1) */
+  --sc-ink-3: #5f5c55;        /* labels, helper, placeholders, counters (6.0:1) */
+  --sc-line: #e6dfd1;         /* hairlines between sections */
+  --sc-line-2: #cbbfa8;       /* visible field, tile and chip borders */
+  --sc-accent: #1f3a5f;       /* ink-blue: primary button, selected chips, focus, the personal line */
+  --sc-accent-2: #2a4a78;     /* pressed primary */
+  --sc-accent-soft: #e7edf6;  /* pressed quiet things, focus ring */
+  --sc-on-accent: #ffffff;    /* text on ink-blue (11.5:1) */
+  --sc-cream: #f8f1e2;        /* text on the card back and on kind inks */
+  --sc-bad: #a33a2b;          /* delete confirm only */
+  --sc-scrim: rgba(28, 36, 51, .38); /* flat, never blurred */
+
+  /* ---------- colour: the special (golden only) ---------- */
+  --sc-gold: #b8913f;         /* foil mid-tone. NEVER text (2.9:1) */
+  --sc-gold-ink: #8a6420;     /* gold text on paper, "1 golden" (4.8:1) */
+  --sc-foil-shadow: #7a5a1c;
+  --sc-foil-light: #e3c77a;
+  --sc-foil-hi: #f6e7b8;
+  /* the one foil ramp (28deg on canvas; CSS angle 118deg = the same top-left -> bottom-right fall) */
+  --sc-foil: linear-gradient(118deg, #7a5a1c 0%, #b8913f 16%, #e3c77a 33%, #f6e7b8 41%, #c9a24f 50%, #9c7631 64%, #d9b866 80%, #8a6420 100%);
+  /* the golden shimmer band (moved across with background-position, soft-light) */
+  --sc-shimmer: linear-gradient(105deg, transparent 0 40%, rgba(255, 246, 216, .55) 50%, transparent 60% 100%);
+
+  /* ---------- colour: kind inks (cards, binder, story backgrounds; never on UI tiles) ---------- */
+  --sc-kind-cat: #9a5f22;       --sc-kind-cat-tint: #e4d5c2;
+  --sc-kind-dog: #2f6a68;       --sc-kind-dog-tint: #ced7d0;
+  --sc-kind-pigeon: #4f5d6e;    --sc-kind-pigeon-tint: #d5d4d1;
+  --sc-kind-crow: #2a2b33;      --sc-kind-crow-tint: #cdcac5;
+  --sc-kind-cow: #4c6b3c;       --sc-kind-cow-tint: #d4d7c7;
+  --sc-kind-squirrel: #9b4a2c;  --sc-kind-squirrel-tint: #e4d0c4;
+  --sc-kind-bird: #3c6e8f;      --sc-kind-bird-tint: #d1d8d8;
+  --sc-kind-monkey: #6e3b55;    --sc-kind-monkey-tint: #dbcdcc;
+  --sc-kind-mystery: #5a4e7c;   --sc-kind-mystery-tint: #d7d1d4;
+
+  /* ---------- type ---------- */
+  --sc-serif: "DM Serif Display", "Iowan Old Style", Georgia, serif;  /* headings, the name spin; never < 20px on screen */
+  --sc-sans: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; /* = family --sans */
+  --sc-hand: "Caveat", "Bradley Hand", "Segoe Print", cursive;        /* one aside per screen */
+  --sc-gothic: "League Gothic", "Arial Narrow", sans-serif;            /* CARD IMAGES ONLY */
+
+  --sc-fs-hero: clamp(2.4rem, 11vw, 2.85rem);  /* lh 1.0, tracking -0.01em */
+  --sc-fs-h1: 2rem;                            /* 32, lh 1.1 */
+  --sc-fs-h2: 1.375rem;                        /* 22, lh 1.2 */
+  --sc-fs-name: 3.25rem;                       /* 52, the name spin */
+  --sc-fs-body: 1rem;                          /* 16, lh 1.5 */
+  --sc-fs-sub: 1.0625rem;                      /* 17, lh 1.45, the landing sub-line */
+  --sc-fs-btn: 1.0625rem;                      /* 17, weight 600 */
+  --sc-fs-chip: .9375rem;                      /* 15, weight 600 */
+  --sc-fs-field: 1.0625rem;                    /* 17, weight 500 (>= 16: no iOS zoom) */
+  --sc-fs-label: .75rem;                       /* 12, weight 600, UPPERCASE, +0.1em */
+  --sc-fs-small: .8125rem;                     /* 13, lh 1.4 */
+  --sc-fs-tool: .8125rem;                      /* 13, weight 600, the 4 tool labels */
+  --sc-fs-hand: 1.5rem;                        /* 24, Caveat asides */
+  --sc-fs-hand-lg: 1.875rem;                   /* 30, "Meet…", "Cutie #14." */
+
+  --sc-track-display: -.01em;
+  --sc-track-label: .1em;
+  --sc-track-stamp: .18em;
+  --sc-numeric: tabular-nums lining-nums;      /* font-variant-numeric for every number on screen */
+
+  /* ---------- space, size, shape ---------- */
+  --sc-gutter: 20px;
+  --sc-col: 480px;
+  --sc-s1: 4px; --sc-s2: 8px; --sc-s3: 12px; --sc-s4: 16px; --sc-s5: 20px;
+  --sc-s6: 24px; --sc-s7: 32px; --sc-s8: 40px; --sc-s9: 56px;
+
+  --sc-h-btn: 56px;          /* primary and secondary buttons (pills: buttons only) */
+  --sc-h-quiet: 44px;        /* quiet buttons */
+  --sc-h-chip: 44px;
+  --sc-h-field: 52px;
+  --sc-h-topbar: 52px;
+  --sc-tap: 44px;            /* icon buttons */
+  --sc-tile: 110px;          /* kind tile at 390 wide (min 96) */
+  --sc-tile-gap: 10px;
+  --sc-tool-h: 64px;
+
+  --sc-r-btn: 999px;
+  --sc-r-chip: 8px;
+  --sc-r-tile: 14px;
+  --sc-r-tool: 12px;
+  --sc-r-icon: 12px;
+  --sc-r-field: 10px 10px 4px 4px;
+  --sc-r-sheet: 20px 20px 0 0;
+  --sc-r-card: 3px;          /* a printed card on screen */
+  --sc-r-cardback: 14px;
+
+  --sc-border: 1px solid var(--sc-line-2);
+  --sc-rule: 1px solid var(--sc-line);
+  --sc-field-rule: 2px solid var(--sc-ink-3);
+  --sc-focus-ring: 0 0 0 3px var(--sc-accent-soft);
+
+  /* shadows: ONLY physical objects (cards, prints, thumbnails, the fan). Panels, tiles, chips: none. */
+  --sc-shadow-print: 0 1px 2px rgba(60, 40, 10, .16), 0 10px 22px -8px rgba(60, 40, 10, .30);
+  --sc-shadow-thumb: 0 1px 1.5px rgba(60, 40, 10, .22), 0 4px 8px -3px rgba(60, 40, 10, .22);
+  --sc-shadow-hole: inset 0 1px 2px rgba(60, 40, 10, .25);
+  --sc-binding: linear-gradient(90deg, rgba(60, 40, 10, .07), rgba(60, 40, 10, 0) 14px);
+
+  /* the album page's grain (CSS-only, <= 3%): an SVG turbulence tile, data URI, no network */
+  --sc-grain-album: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .24 0 0 0 0 .18 0 0 0 0 .08 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.06'/%3E%3C/svg%3E");
+
+  /* corner mounts (binder, Done) */
+  --sc-mount: 12px;          /* leg length (14 felt heavy on 104 px thumbs) */
+  --sc-mount-ink: rgba(28, 36, 51, .88);
+  --sc-mount-empty: rgba(28, 36, 51, .22);
+
+  /* ---------- motion ---------- */
+  --sc-ease: cubic-bezier(.2, .75, .25, 1);
+  --sc-ease-in: cubic-bezier(.4, 0, .8, .3);
+  --sc-ease-flip: cubic-bezier(.45, .05, .2, 1);
+  --sc-ease-stamp: cubic-bezier(.2, 1.3, .4, 1);   /* the ONLY overshoot on the site */
+  --sc-dur-press: 80ms;
+  --sc-dur-quick: 160ms;
+  --sc-dur-screen: 220ms;
+  --sc-dur-sheet: 280ms;
+  --sc-dur-flip: 500ms;
+  --sc-dur-stamp: 220ms;
+  --sc-dur-shimmer: 1600ms;
+  --sc-shimmer-every: 7s;
+  /* the name spin step durations (ms), then a 160ms settle: 45,45,50,60,72,88,110,140,180,230 */
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --sc-dur-screen: 160ms;
+    --sc-dur-sheet: 160ms;
+    --sc-dur-flip: 250ms;   /* used as a crossfade, not a turn */
+    --sc-dur-stamp: 150ms;
+  }
+}

@@ -1,0 +1,311 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Spotted a Cutie: find out who they really are</title>
+  <meta name="description" content="Snap any street cat, dog or pigeon and find out who they really are. A goofy collectible card with a name and a personality, made for one friend. Free, no account, and your photos stay on your phone.">
+  <meta name="color-scheme" content="light">
+  <meta name="theme-color" content="#f6f2ea">
+  <meta property="og:title" content="Spotted a Cutie: find out who they really are">
+  <meta property="og:description" content="Snap any street cat, dog or pigeon. Get a collectible card with a name and a personality, and send it to a friend.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://spotted-a-cutie.vercel.app/">
+  <meta name="twitter:card" content="summary">
+  <meta name="twitter:title" content="Spotted a Cutie: find out who they really are">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M5 6h22a2 2 0 0 1 2 2v5a3 3 0 0 0 0 6v5a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-5a3 3 0 0 0 0-6V8a2 2 0 0 1 2-2Z' fill='%231f3a5f'/%3E%3Ctext x='16' y='22' font-family='Georgia,serif' font-size='15' text-anchor='middle' fill='%23f8f1e2'%3E%3F%3C/text%3E%3C/svg%3E">
+  <link rel="preload" href="fonts/dm-serif-display-400.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="fonts/caveat-600.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="src/design-tokens.css">
+  <link rel="stylesheet" href="src/styles.css">
+  <!-- Vercel Web Analytics (page views). Same-origin once deployed; a harmless 404 until it is switched on. -->
+  <script>window.va = window.va || function () { (window.vaq = window.vaq || []).push(arguments); };</script>
+  <script defer src="/_vercel/insights/script.js" onerror="this.remove()"></script>
+</head>
+<body data-screen="landing">
+  <noscript>
+    <div class="noscript">
+      <h1>Spotted a Cutie needs JavaScript</h1>
+      <p>Switch it on in your browser settings and give this page a refresh.</p>
+    </div>
+  </noscript>
+
+  <div id="app">
+
+    <!-- 1. Landing (Step 1) -->
+    <section id="screen-landing" class="screen landing is-active" aria-label="Spotted a Cutie">
+      <header class="topbar">
+        <div class="wordmark">
+          <svg width="22" height="14" viewBox="0 0 22 14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true" focusable="false"><path d="M3 1h16a2 2 0 0 1 2 2v1.6a2.4 2.4 0 0 0 0 4.8V11a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9.4a2.4 2.4 0 0 0 0-4.8V3a2 2 0 0 1 2-2Z"/></svg>
+          <span>Spotted a cutie</span>
+        </div>
+        <button id="lnkBinder" class="btn-quiet" type="button" hidden><span class="ico" data-icon="binder" data-size="20"></span><u>My cuties <span id="lnkCount"></span></u></button>
+      </header>
+      <main class="land-main">
+        <h1 class="hero" tabindex="-1">Spotted a cutie?</h1>
+        <p class="sub">Snap any street cat, dog or pigeon. Find out who they really are.</p>
+        <div class="fan" id="fan" aria-hidden="true">
+          <span class="aside">real cats. fake names.</span>
+          <svg class="arrow" width="48" height="40" viewBox="0 0 48 40" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M45 12C32 7 18 12 12 33"/><path d="M7.5 27 12 34l6.5-5"/></svg>
+          <div class="fc f2"></div>
+          <div class="fc f3"></div>
+          <div class="fc f1"></div>
+        </div>
+        <div class="stack">
+          <button id="btnSnap" class="btn-primary" type="button"><span class="ico" data-icon="camera" data-size="22"></span><span class="lbl">Snap a cutie</span></button>
+          <button id="btnPick" class="btn-second" type="button"><span class="ico" data-icon="photos" data-size="22"></span><span class="lbl">Pick a photo</span></button>
+        </div>
+        <p class="trust"><span class="ico" data-icon="lock" data-size="14"></span><span>Free. No account. Your photos stay on your phone.</span></p>
+        <p class="note-line" id="landNote" hidden><span class="ico" data-icon="lock" data-size="14"></span><span id="landNoteText"></span></p>
+      </main>
+      <div data-footer></div>
+    </section>
+
+    <!-- 2. Kind (Step 3) -->
+    <section id="screen-kind" class="screen kind" aria-label="Who did you spot?">
+      <header class="topbar t3">
+        <button id="kindBack" class="icon-btn" type="button" aria-label="Back"><span class="ico" data-icon="back" data-size="24"></span></button>
+        <span class="top-title"></span>
+        <span class="top-sp"></span>
+      </header>
+      <div class="kind-main">
+        <div class="kind-head">
+          <h1 tabindex="-1">Who did you spot?</h1>
+          <p>Tap what it is. We’ll handle the paperwork.</p>
+        </div>
+        <div class="mini-print">
+          <div class="print-hit" id="printHit" role="button" tabindex="0" aria-label="Your photo. Tap your cutie to centre them.">
+            <canvas id="kindPhoto" width="336" height="420"></canvas>
+            <span class="tap-ring" id="tapRing" aria-hidden="true"></span>
+          </div>
+          <p class="print-hint" id="printHint">tap your cutie</p>
+        </div>
+        <div class="tiles" id="tiles" role="group" aria-label="What did you spot?"></div>
+      </div>
+    </section>
+
+    <!-- 3. Reveal (Step 4) -->
+    <section id="screen-reveal" class="screen reveal" aria-label="The reveal">
+      <button id="rvClose" class="icon-btn rv-close" type="button" aria-label="Cancel"><span class="ico" data-icon="close" data-size="24"></span></button>
+      <div class="rv-main">
+        <p class="rv-meet" id="rvMeet">Meet…</p>
+        <div class="rv-name" aria-hidden="true"><div class="rv-reel" id="rvReel"></div></div>
+        <span class="rv-line" id="rvLine" aria-hidden="true"></span>
+        <div class="rv-stage" id="rvStage">
+          <div class="rv-ring" id="rvRing" aria-hidden="true"></div>
+          <div class="rv-lift" id="rvLift">
+            <div class="rv-flip" id="rvFlip">
+              <div class="rv-face rv-back" aria-hidden="true">
+                <div class="rv-plate">?</div>
+                <div class="rv-no" id="rvBackNo">#001</div>
+                <div class="rv-brand">SPOTTED A CUTIE</div>
+              </div>
+              <div class="rv-face rv-front">
+                <div class="layers" id="rvCardHost"></div>
+                <div class="shine" id="rvShine"></div>
+              </div>
+            </div>
+          </div>
+          <div class="rv-stamp" id="rvStamp" aria-hidden="true"></div>
+        </div>
+      </div>
+      <p class="sr-only" id="rvLive" role="status" aria-live="polite"></p>
+    </section>
+
+    <!-- 4. Result (Steps 5 and 6) -->
+    <section id="screen-result" class="screen result" aria-label="Your card">
+      <header class="topbar t3">
+        <button id="resBack" class="icon-btn" type="button" aria-label="Back"><span class="ico" data-icon="back" data-size="24"></span></button>
+        <span class="top-title" id="resTitle">Cutie #001</span>
+        <span class="top-sp" id="resBinderSp"></span>
+        <button id="resBinder" class="icon-btn" type="button" aria-label="My cuties" hidden><span class="ico" data-icon="binder" data-size="24"></span></button>
+      </header>
+      <div class="res-body">
+        <div class="res-card" id="resCard" role="button" tabindex="0" aria-label="View the card full screen">
+          <div class="layers"></div>
+          <div class="shine"></div>
+        </div>
+        <div class="g1">
+          <div class="chips-scroll" id="styleChips" role="group" aria-label="Style"></div>
+        </div>
+        <div class="g2">
+          <div class="tools">
+            <button id="toolName" class="tool" type="button"><span class="ico" data-icon="dice" data-size="22"></span><span>New name</span></button>
+            <button id="toolAll" class="tool" type="button"><span class="ico" data-icon="dice" data-size="22"></span><span>New personality</span></button>
+            <button id="toolEdit" class="tool" type="button"><span class="ico" data-icon="pencil" data-size="22"></span><span>Edit words</span></button>
+            <button id="toolAdjust" class="tool" type="button"><span class="ico" data-icon="crop" data-size="22"></span><span>Adjust photo</span></button>
+          </div>
+        </div>
+        <div class="g3">
+          <div class="sec-rule"></div>
+          <h2 class="h2" id="hWhere">Where did you spot them?</h2>
+          <div class="field has-ico" id="fldWhere">
+            <span class="fico" data-icon="pin" data-size="18"></span>
+            <input id="inWhere" type="text" maxlength="32" autocomplete="off" autocapitalize="none" enterkeyhint="done" placeholder="on a scooter seat" aria-labelledby="hWhere">
+            <span class="count" id="cntWhere" aria-hidden="true">0/32</span>
+          </div>
+          <div class="sec-rule"></div>
+          <h2 class="h2" id="hTo">Who’s this for?</h2>
+          <div class="field" id="fldTo">
+            <input id="inTo" type="text" maxlength="16" autocomplete="off" autocapitalize="words" enterkeyhint="done" placeholder="Priya" aria-labelledby="hTo">
+            <span class="count" id="cntTo" aria-hidden="true">0/16</span>
+          </div>
+          <p class="helper" id="toHelp" hidden>Add a name so it lands on the card.</p>
+          <div class="chips-wrap" id="reasons" role="group" aria-label="Why"></div>
+          <div class="story-row">
+            <button id="btnStory" class="btn-quiet" type="button"><span class="ico" data-icon="story" data-size="20"></span><u class="lbl">Story size</u></button>
+          </div>
+          <div class="del-row" id="delRow" hidden>
+            <button id="btnDelete" class="btn-quiet bad" type="button"><span class="ico" data-icon="trash" data-size="20"></span><u>Delete</u></button>
+          </div>
+        </div>
+      </div>
+      <div class="bar">
+        <button id="btnSend" class="btn-primary" type="button"><span class="ico" data-icon="share" data-size="22"></span><span class="lbl">Send</span></button>
+        <button id="btnSave" class="btn-second" type="button"><span class="ico" data-icon="save" data-size="22"></span><span class="lbl">Save image</span></button>
+      </div>
+    </section>
+
+    <!-- 6. Adjust photo -->
+    <section id="screen-adjust" class="screen adjust" aria-label="Adjust photo">
+      <header class="topbar t3">
+        <button id="adjBack" class="icon-btn" type="button" aria-label="Back"><span class="ico" data-icon="back" data-size="24"></span></button>
+        <span class="top-title">Adjust photo</span>
+        <button id="adjCancel" class="btn-quiet" type="button"><u>Cancel</u></button>
+      </header>
+      <div class="adj-main">
+        <div class="adj-stage" id="adjStage"><canvas id="adjCanvas" role="img" aria-label="The photo in its frame. Drag to move it, pinch to zoom."></canvas></div>
+        <p class="hand">drag to move · pinch to zoom</p>
+        <label class="zoomrow"><span aria-hidden="true">−</span><input id="adjZoom" type="range" min="1" max="4" step="0.01" value="1" aria-label="Zoom"><span aria-hidden="true">+</span></label>
+      </div>
+      <div class="bar">
+        <button id="adjDone" class="btn-primary" type="button"><span class="ico" data-icon="check" data-size="22"></span><span class="lbl">Done</span></button>
+      </div>
+    </section>
+
+    <!-- 7. Done (Step 7) -->
+    <section id="screen-done" class="screen done" aria-label="Done">
+      <main class="done-main">
+        <div class="done-slot"><div class="mounted" id="doneMount"><i></i><i></i><i></i><i></i><div class="layers" id="doneCard"></div></div></div>
+        <h1 class="done-title" id="doneTitle" tabindex="-1">Larry is in your binder.</h1>
+        <p class="done-hand" id="doneHand">Cutie #1.</p>
+        <p class="note-line" id="doneNote" hidden><span class="ico" data-icon="lock" data-size="14"></span><span id="doneNoteText"></span></p>
+        <div class="stack">
+          <button id="doneAgain" class="btn-primary" type="button"><span class="ico" data-icon="share" data-size="22"></span><span class="lbl">Send to someone else</span></button>
+          <button id="doneStyle" class="btn-second" type="button"><span class="lbl">Try another style</span></button>
+          <button id="doneNew" class="btn-second" type="button"><span class="ico" data-icon="camera" data-size="22"></span><span class="lbl">Spot another cutie</span></button>
+          <button id="doneBinder" class="btn-quiet center" type="button"><span class="ico" data-icon="binder" data-size="20"></span><u>My cuties</u></button>
+        </div>
+      </main>
+      <div data-footer></div>
+    </section>
+
+    <!-- 8. Binder (Step 8) -->
+    <section id="screen-binder" class="screen binder" aria-label="My cuties">
+      <header class="topbar t3">
+        <button id="bindBack" class="icon-btn" type="button" aria-label="Back"><span class="ico" data-icon="back" data-size="24"></span></button>
+        <span class="top-title">My cuties</span>
+        <span class="top-sp"></span>
+      </header>
+      <div class="bind-head">
+        <h1 id="bindTitle" tabindex="-1"></h1>
+        <p id="bindCounts"></p>
+      </div>
+      <div class="album" id="album">
+        <span class="hole" style="top:15%"></span><span class="hole" style="top:50%"></span><span class="hole" style="top:85%"></span>
+        <div class="album-grid" id="albumGrid"></div>
+      </div>
+      <p class="bind-note">Your cuties live on this phone only. Clearing your browser clears them.</p>
+      <div class="bind-cta" id="bindCta" hidden>
+        <button id="bindSnap" class="btn-primary" type="button"><span class="ico" data-icon="camera" data-size="22"></span><span class="lbl">Snap a cutie</span></button>
+      </div>
+      <div data-footer></div>
+    </section>
+
+    <!-- 9. Errors: one friendly message, one button -->
+    <section id="screen-error" class="screen error" aria-label="Something went wrong">
+      <main class="err-main">
+        <svg class="err-frame" width="88" height="110" viewBox="0 0 88 110" fill="none" aria-hidden="true" focusable="false">
+          <g fill="currentColor" opacity=".5"><path d="M0 0h12L0 12Z"/><path d="M88 0v12L76 0Z"/><path d="M0 110V98l12 12Z"/><path d="M88 110H76l12-12Z"/></g>
+          <rect x="11.5" y="11.5" width="65" height="87" rx="1" stroke="currentColor" stroke-width="1" stroke-dasharray="4 3"/>
+        </svg>
+        <h1 class="err-title" id="errTitle" tabindex="-1">That didn’t work.</h1>
+        <p class="err-detail" id="errDetail" role="alert">Give it another go.</p>
+        <button id="errBtn" class="btn-primary" type="button"><span class="lbl">Start over</span></button>
+      </main>
+    </section>
+
+    <!-- The engine did not load -->
+    <section id="screen-broken" class="screen error" aria-label="Spotted a Cutie did not load">
+      <main class="err-main">
+        <svg class="err-frame" width="88" height="110" viewBox="0 0 88 110" fill="none" aria-hidden="true" focusable="false">
+          <g fill="currentColor" opacity=".5"><path d="M0 0h12L0 12Z"/><path d="M88 0v12L76 0Z"/><path d="M0 110V98l12 12Z"/><path d="M88 110H76l12-12Z"/></g>
+          <rect x="11.5" y="11.5" width="65" height="87" rx="1" stroke="currentColor" stroke-width="1" stroke-dasharray="4 3"/>
+        </svg>
+        <h1 class="err-title" tabindex="-1">The cards are still warming up.</h1>
+        <p class="err-detail">Something didn’t load. Check your connection and give it another go.</p>
+        <button id="brokenBtn" class="btn-primary" type="button"><span class="lbl">Refresh</span></button>
+      </main>
+      <div data-footer></div>
+    </section>
+
+  </div>
+
+  <!-- Overlays (outside the column so fixed positioning is never affected by screen animations) -->
+  <div class="scrim" id="scrim"></div>
+
+  <div class="sheet" id="sheetEdit" role="dialog" aria-modal="true" aria-labelledby="editTitle">
+    <span class="grab" aria-hidden="true"></span>
+    <div class="sheet-head">
+      <h2 id="editTitle">Edit words</h2>
+      <button id="editClose" class="icon-btn" type="button" aria-label="Close"><span class="ico" data-icon="close" data-size="24"></span></button>
+    </div>
+    <div class="sheet-rows" id="editRows"></div>
+    <div class="sheet-done"><button id="editDone" class="btn-primary" type="button"><span class="ico" data-icon="check" data-size="22"></span><span class="lbl">Done</span></button></div>
+  </div>
+
+  <div class="sheet small" id="sheetConfirm" role="alertdialog" aria-modal="true" aria-labelledby="confirmTitle">
+    <span class="grab" aria-hidden="true"></span>
+    <div class="confirm-body">
+      <h2 id="confirmTitle">Remove this cutie from your binder?</h2>
+      <p>This can’t be undone.</p>
+    </div>
+    <div class="sheet-done col">
+      <button id="confirmYes" class="btn-bad" type="button"><span class="lbl">Remove</span></button>
+      <button id="confirmNo" class="btn-second" type="button"><span class="lbl">Keep</span></button>
+    </div>
+  </div>
+
+  <div class="viewer" id="viewer" hidden>
+    <button id="viewClose" class="icon-btn" type="button" aria-label="Close"><span class="ico" data-icon="close" data-size="24"></span></button>
+    <canvas id="viewCanvas" role="img" aria-label="Your card, full screen"></canvas>
+  </div>
+
+  <div class="busy" id="busy" role="status" aria-live="polite"><div class="busy-card"><span class="spin" aria-hidden="true"></span><span id="busyText">One moment…</span></div></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- A single full-size output (address shortcut screen=frame) -->
+  <div id="frameHolder"><canvas id="frameCanvas" width="1080" height="1350"></canvas></div>
+
+  <!-- Photo inputs: Snap opens the phone's own camera app; Pick opens the photo library. No getUserMedia. -->
+  <input id="fSnap" class="vh" type="file" accept="image/*" capture="environment" tabindex="-1" aria-hidden="true">
+  <input id="fPick" class="vh" type="file" accept="image/*" tabindex="-1" aria-hidden="true">
+
+  <script defer src="src/engine/util.js"></script>
+  <script defer src="src/engine/palette.js"></script>
+  <script defer src="src/engine/decode.js"></script>
+  <script defer src="src/engine/content-data.js"></script>
+  <script defer src="src/engine/content.js"></script>
+  <script defer src="src/engine/photo.js"></script>
+  <script defer src="src/engine/grade.js"></script>
+  <script defer src="src/engine/art.js"></script>
+  <script defer src="src/engine/text.js"></script>
+  <script defer src="src/engine/styles.js"></script>
+  <script defer src="src/engine/card.js"></script>
+  <script defer src="src/engine/binder.js"></script>
+  <script defer src="src/engine/sample.js"></script>
+  <script defer src="src/engine/export.js"></script>
+  <script defer src="src/engine/share.js"></script>
+  <script defer src="src/app.js"></script>
+</body>
+</html>
