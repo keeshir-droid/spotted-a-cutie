@@ -178,3 +178,63 @@
     --sc-dur-stamp: 150ms;
   }
 }
+
+/* =====================================================================================
+   PIVOT 2 (Rishi, after board2): "The Scrapbook". Colour comes from coloured paper, washi tape and stamp
+   inks, in riso/washi print colours that sit next to the card inks. No characters, no candy palette.
+   The Kind screen ("Who did you spot?") is APPROVED AS BUILT: none of these tokens apply to it.
+   Text rule: on every craft ink and sheet, text is --sc-ink (>= 5.4:1), except TOMATO: ink 3.8:1, so
+   on tomato use large text only (>= 24 px) or cream on --sc-craft-tomato-deep (5.3:1).
+   Card values (palette.js) are unchanged. Nothing in the built site referenced the old pivot block.
+   ===================================================================================== */
+:root {
+  /* print inks: tape, stamps, tabs, coloured-paper accents */
+  --sc-craft-tomato: #d4553a;       /* stamps, tape, the hot accent (3.6:1 on paper: shapes + large text) */
+  --sc-craft-tomato-deep: #b5432c;  /* stamp text and small coloured text (4.9:1 on paper; cream on it 5.3:1) */
+  --sc-craft-marigold: #e8a83e;     /* ink on it 7.5:1 */
+  --sc-craft-sky: #6ea7cc;          /* ink 6.0:1 */
+  --sc-craft-leaf: #7ea35b;         /* ink 5.4:1 */
+  --sc-craft-rose: #e2898c;         /* ink 6.1:1 */
+  --sc-craft-lilac: #a897c9;        /* ink 5.9:1 */
+  --sc-kraft: #c8a679;              /* kraft tags and ticket stubs, ink 6.8:1 */
+  --sc-note: #f4d97a;               /* sticky notes, ink 11.2:1 */
+  --sc-clip: #8b919c;               /* paper clips (drawn) */
+
+  /* coloured paper sheets (the ink at 32% over paper): page backgrounds and big blocks, ink >= 9.4:1 */
+  --sc-sheet-tomato: #ebc0b2; --sc-sheet-marigold: #f2dab3; --sc-sheet-sky: #cadae0; --sc-sheet-leaf: #d0d9bc;
+  --sc-sheet-rose: #f0d0cc; --sc-sheet-lilac: #ddd5df; --sc-sheet-kraft: #e7dac6; --sc-sheet-note: #f5eac6;
+
+  /* per kind: the paper and tape colour of a kind in the UI (reveal, result tape, binder tabs) */
+  --sc-kind-paper-cat: var(--sc-sheet-marigold);   --sc-kind-tape-cat: var(--sc-craft-marigold);
+  --sc-kind-paper-dog: var(--sc-sheet-leaf);       --sc-kind-tape-dog: var(--sc-craft-leaf);
+  --sc-kind-paper-pigeon: var(--sc-sheet-lilac);   --sc-kind-tape-pigeon: var(--sc-craft-lilac);
+  --sc-kind-paper-crow: var(--sc-sheet-sky);       --sc-kind-tape-crow: var(--sc-craft-sky);
+  --sc-kind-paper-cow: var(--sc-sheet-leaf);       --sc-kind-tape-cow: var(--sc-craft-leaf);
+  --sc-kind-paper-squirrel: var(--sc-sheet-tomato); --sc-kind-tape-squirrel: var(--sc-craft-tomato);
+  --sc-kind-paper-monkey: var(--sc-sheet-rose);    --sc-kind-tape-monkey: var(--sc-craft-rose);
+  --sc-kind-paper-bird: var(--sc-sheet-sky);       --sc-kind-tape-bird: var(--sc-craft-sky);
+  --sc-kind-paper-mystery: var(--sc-sheet-lilac);  --sc-kind-tape-mystery: var(--sc-craft-lilac);
+
+  /* one colour moment per screen (Kind excluded: approved as built) */
+  --sc-moment-landing: var(--sc-sheet-sky);
+  --sc-moment-done: var(--sc-sheet-marigold);
+  --sc-moment-binder: var(--sc-sheet-lilac);
+  --sc-moment-error: var(--sc-sheet-rose);
+
+  /* washi tape: stripes over the tape ink, opacity .82, torn ends via clip-path (see board3 .washi) */
+  --sc-washi-stripes: repeating-linear-gradient(45deg, rgba(255, 255, 255, .3) 0 4px, transparent 4px 10px);
+  --sc-washi-dots: radial-gradient(rgba(255, 255, 255, .45) 1.6px, transparent 2px) 0 0 / 8px 8px;
+  --sc-washi-alpha: .82;
+  /* edges (apply on the element so its own --c resolves):
+     scallop:  background: radial-gradient(circle at 12px 0, var(--c) 11px, transparent 11.6px) 0 0 / 24px 12px repeat-x; height 12px
+     pinked:   background: linear-gradient(135deg, var(--c) 25%, transparent 25%) -7px 0 / 14px 14px, linear-gradient(225deg, var(--c) 25%, transparent 25%) -7px 0 / 14px 14px; height 7px */
+  --sc-scallop-h: 12px;
+  --sc-pinked-h: 7px;
+  /* rubber-stamp speckle (mask) */
+  --sc-stamp-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='60' height='60'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.55' numOctaves='2' seed='4'/%3E%3CfeColorMatrix values='0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 -9 7'/%3E%3C/filter%3E%3Crect width='60' height='60' filter='url(%23n)'/%3E%3C/svg%3E");
+  /* paper objects: a soft lift, never a toy shadow */
+  --sc-shadow-paper: 0 1px 1px rgba(60, 40, 10, .12), 0 6px 14px -8px rgba(60, 40, 10, .35);
+
+  /* motion: quiet, physical. Notes and tags settle (a slight rotate), stamps thump (the stamp ease). No springs on everything. */
+  --sc-dur-settle: 240ms;
+}

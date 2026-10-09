@@ -1222,6 +1222,61 @@
         replacement: "{to} REPLACED BY {kind}, SOURCES SAY",
         meet: "LOCAL {kind} ASKS ABOUT {to}"
       }
+    },
+
+    // Done-screen nudge: one warm line after every send/save about where the binder lives.
+    // Only {name}. Rotate so the 10th one is still fun. Max 70 characters.
+    nudges: {
+      generic: [
+        "{name} lives in this browser, on this phone. Cozy!",
+        "Your cuties live on this phone. The ones you sent live in your chats.",
+        "{name} is safe in your binder, right here on this phone.",
+        "Binder tip: clearing your browser clears your cuties. Choose wisely.",
+        "{name} is saved here. Sent cards live in your chats too.",
+        "Your binder stays on this phone. No account, no cloud, just you.",
+        "{name} has moved in. This phone only, so save a copy.",
+        "Cuties live in this browser. Saved images live in your photos.",
+        "Your binder never leaves this phone. Like a diary, but cuter.",
+        "{name} is filed away on this phone. Sent ones are in your chats."
+      ],
+      ios: [
+        "{name} is in your binder. Add to Home Screen so they stay.",
+        "iPhones tidy up quiet websites. Tap Share, then Add to Home Screen.",
+        "Keep {name} cozy: tap Share, then Add to Home Screen.",
+        "Add to Home Screen and your binder stays put. {name} approves.",
+        "One tap to keep your cuties: Share, then Add to Home Screen.",
+        "{name} wants an address: Share, then Add to Home Screen.",
+        "Your binder lives on this iPhone. Add to Home Screen so it stays.",
+        "Collector move: tap Share, then Add to Home Screen.",
+        "{name} would like a spot on your Home Screen. Share, then Add."
+      ],
+      inapp: [
+        "This app's browser keeps its own binder. Open in your main browser.",
+        "{name} is saved in this app's browser. Try Safari or Chrome.",
+        "Tap the menu, then Open in browser, to keep your cuties for good.",
+        "In-app browsers forget things. Open this site in Safari or Chrome.",
+        "{name} deserves a real home: tap the menu, then Open in browser.",
+        "This binder belongs to the app. Safari or Chrome keeps it for good.",
+        "Collecting lots? Open the site in your main browser from the menu.",
+        "{name} prefers your main browser. Menu, then Open in browser.",
+        "This app keeps a separate binder. Your main browser keeps it better."
+      ],
+      blocked: [
+        "This browser can't keep cuties, but {name} works. Send or save!",
+        "Save the image and {name} comes home with you.",
+        "Your photos will keep this one safe and sound: tap Save image.",
+        "{name} can't stay in this browser, but fits in your photos.",
+        "Private mode, maybe? Send or save the card to keep your cuties.",
+        "This browser can't hold on to cards. Your camera roll can.",
+        "Tap Save image and {name} is yours to keep.",
+        "This browser can't keep cards. Send {name} to someone nice."
+      ],
+      first: [
+        "{name} kicks off your binder! It lives on this phone.",
+        "Cutie #1: {name}. Kept in this browser, on this phone.",
+        "Your binder has begun. It lives on this phone, so keep a copy too.",
+        "Welcome to the binder. It's on this phone only, like a secret diary."
+      ]
     }
   };
 })(globalThis);

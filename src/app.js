@@ -243,7 +243,12 @@ function fillFooter() {
     var t = $("#toast"); t.textContent = msg; t.classList.add("is-on");
     clearTimeout(toastT); toastT = setTimeout(function () { t.classList.remove("is-on"); }, 2400);
   }
-  function busy(msg) { $("#busyText").textContent = msg || "One moment…"; $("#busy").classList.add("is-on"); }
+  function busy(msg) {
+    var no = S.binderOK && S.stats && S.stats.nextNumber ? S.stats.nextNumber : (S.cur && S.cur.number) || (S.localCount + 1);
+    $("#busyHead").textContent = "NOW PRINTING · No. " + pad3(no);
+    $("#busyText").textContent = msg || "One moment…";
+    $("#busy").classList.add("is-on");
+  }
   function unbusy() { $("#busy").classList.remove("is-on"); }
 
   // a host element holding two canvases; painting a new picture crossfades from the old one
@@ -289,6 +294,22 @@ function fillFooter() {
     return el.animate(frames, o);
   }
 
+  // the browser bar follows the screen's sheet colour (never on Kind: it stays paper)
+  function setTheme(name) {
+    var meta = d.querySelector('meta[name="theme-color"]');
+    if (!meta) return;
+    var v = "--sc-paper";
+    if (name === "landing") v = "--sc-moment-landing";
+    else if (name === "done") v = "--sc-moment-done";
+    else if (name === "binder") v = "--sc-moment-binder";
+    else if (name === "error") v = "--sc-moment-error";
+    else if ((name === "reveal" || name === "result") && S.kind) v = "--sc-kind-paper-" + S.kind;
+    try {
+      var c = getComputedStyle(d.documentElement).getPropertyValue(v).trim();
+      if (c) meta.setAttribute("content", c);
+    } catch (e) { /* the bar colour is a nicety */ }
+  }
+
   var SCREENS = ["landing", "kind", "reveal", "result", "adjust", "done", "binder", "error", "broken"];
   function show(name, opt) {
     opt = opt || {};
@@ -306,6 +327,7 @@ function fillFooter() {
     });
     d.body.setAttribute("data-screen", name);
     S.screen = name;
+    setTheme(name);
     if (prev !== name && !S.fromPop) hist(name);
     if (opt.scrollTo != null) window.scrollTo(0, opt.scrollTo); else window.scrollTo(0, 0);
     var h = $("#screen-" + name + " [tabindex='-1']");
@@ -372,6 +394,7 @@ function fillFooter() {
     }
     $("#errTitle").textContent = i.title;
     $("#errDetail").textContent = i.detail;
+    $("#errStampSub").textContent = ({ "not-image": "not a photo", "heic": "can’t open this one", "unreadable": "can’t open this one", "export-failed": "lost in the post" })[i.code] || "give it another go";
     $("#errBtn .lbl").textContent = label;
     S.errAct = act || function () { show("landing"); };
     show("error");
@@ -646,6 +669,7 @@ function fillFooter() {
       return;
     }
     rvReset();
+    $("#screen-reveal").setAttribute("data-kind", kindId);
     var R = S.rv = { t0: Date.now(), timers: [], done: false, cancelled: false, wantSkip: false, prep: null };
     $("#rvBackNo").textContent = "#" + pad3(S.binderOK && S.stats && S.stats.nextNumber ? S.stats.nextNumber : (S.localCount + 1));
     show("reveal");
@@ -689,8 +713,13 @@ function fillFooter() {
       return sp;
     }
     function underline(sp) {
-      var line = $("#rvLine"), b = sp.firstChild;
-      line.style.width = Math.min(W, b.offsetWidth) + "px"; line.classList.add("is-on");
+      var line = $("#rvLine"), b = sp.firstChild, lw = Math.max(40, Math.round(Math.min(W, b.offsetWidth)));
+      // a squiggle built to the name's measured width (small waves, so a long name gets a long line)
+      var dd = "M2 8", x = 2, up = true, nx;
+      while (x < lw - 2) { nx = Math.min(x + 14, lw - 2); dd += " Q" + ((x + nx) / 2) + " " + (up ? 1 : 15) + " " + nx + " 8"; x = nx; up = !up; }
+      line.setAttribute("viewBox", "0 0 " + lw + " 14");
+      line.firstElementChild.setAttribute("d", dd);
+      line.style.width = lw + "px"; line.classList.add("is-on");
     }
     function flip() {
       R.prep.cardP.then(function (card) {
@@ -798,6 +827,7 @@ function fillFooter() {
 
   function syncResultUI() {
     var c = S.cur, L = E.limits();
+    $("#screen-result").setAttribute("data-kind", c.kind);
     $("#resTitle").textContent = "Cutie #" + pad3(c.number);
     $$("#styleChips .style-chip").forEach(function (b) { b.setAttribute("aria-pressed", String(b.getAttribute("data-style") === c.style)); });
     $("#inWhere").value = c.place || "";
@@ -1080,6 +1110,7 @@ function fillFooter() {
       });
       host.appendChild(row);
     });
+    $("#sheetEdit").style.setProperty("--kt", "var(--sc-kind-tape-" + S.cur.kind + ")");
     openSheet("sheetEdit");
     try { $("#editClose").focus({ preventScroll: true }); } catch (e) { /* ignore */ }
   }
@@ -1221,7 +1252,18 @@ function fillFooter() {
     var name = (S.cur && S.cur.traits && S.cur.traits.name) || "Your cutie", num = S.cur ? S.cur.number : 1;
     var how = S.done && S.done.how;
     $("#doneTitle").textContent = kept ? name + " is in your binder." : (how === "save" ? "Saved." : "Sent.");
-    $("#doneHand").textContent = "Cutie #" + num + ".";
+    $("#doneHand").textContent = "Cutie #" + num + "." + (num === 1 ? " A strong start." : (S.cur && S.cur.golden ? " Gold, no less." : ""));
+    var filedDate = "";
+    try { filedDate = new Date().toLocaleDateString("en-GB", { day: "numeric", month: "short" }); } catch (e) { filedDate = ""; }
+    $(".done-top").classList.toggle("unkept", !kept);
+    if (kept) {
+      $("#doneFiledB").textContent = "Filed";
+      $("#doneFiled").textContent = "No. " + pad3(num) + (filedDate ? " · " + filedDate : "");
+    } else {                                           // nothing was filed: the stamp says what really happened
+      $("#doneFiledB").textContent = how === "save" ? "Saved" : "On its way";
+      $("#doneFiled").textContent = how === "save" ? "to your photos" : "sent, not filed";
+      $("#doneHand").textContent = "Cutie #" + num + ".";
+    }
     var note = $("#doneNote");
     note.hidden = !S.doneNote;
     if (S.doneNote) $("#doneNoteText").textContent = how === "save"
@@ -1230,6 +1272,49 @@ function fillFooter() {
     try { paintLayers(layersIn($("#doneMount")), E.render(S.card, 0.5, "card"), 0); } catch (e) { /* the slot just stays empty */ }
     var m = $("#doneMount"); m.classList.remove("drop"); void m.offsetWidth; m.classList.add("drop");
     updateBinderLinks();
+    fillNudge(name);
+  }
+
+  // the saving nudge: one taped note after every send or save (lines: SC.CONTENT_DATA.nudges)
+  var NUDGE_TITLE = { first: "first one in the book", generic: "tiny reminder", ios: "keep them safe", inapp: "you’re inside an app", blocked: "no binder here" };
+  var DOTS = '<svg width="16" height="16" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><g fill="currentColor"><circle cx="5" cy="12" r="2"/><circle cx="12" cy="12" r="2"/><circle cx="19" cy="12" r="2"/></g></svg>';
+  function nudgeVariant() {
+    var forced = Q.get("nudge");
+    if (forced && NUDGE_TITLE[forced]) return Promise.resolve(forced);
+    if (!S.binderOK) return Promise.resolve("blocked");
+    var b = E.sc().binder, p = b && b.keepStatus ? Promise.resolve(b.keepStatus()).catch(function () { return null; }) : Promise.resolve(null);
+    return p.then(function (st) {
+      if (st && st.browserOk === false) return "blocked";
+      if (S.stats && S.stats.total === 1) return "first";
+      if (st && st.platform === "inapp") return "inapp";
+      if (st && st.platform === "ios" && st.standalone === false) return "ios";
+      return "generic";
+    });
+  }
+  function pickNudge(list, variant) {
+    var key = "spotted-a-cutie:nudge:" + variant, last = -1, i;
+    try { last = parseInt(localStorage.getItem(key), 10); if (isNaN(last)) last = -1; } catch (e) { last = -1; }
+    i = Math.floor(Math.random() * list.length);
+    if (list.length > 1 && i === last) i = (i + 1 + Math.floor(Math.random() * (list.length - 1))) % list.length;
+    try { localStorage.setItem(key, String(i)); } catch (e) { /* fine without it */ }
+    return list[i];
+  }
+  function fillNudge(name) {
+    var host = $("#nudge"), tok = (S.nudgeTok = (S.nudgeTok || 0) + 1);
+    host.hidden = true; $("#doneNote").hidden = true;
+    var data = E.sc().CONTENT_DATA && E.sc().CONTENT_DATA.nudges;
+    if (!data) return;
+    nudgeVariant().then(function (variant) {
+      if (tok !== S.nudgeTok || S.screen === "landing") return;
+      var list = data[variant]; if (!list || !list.length) return;
+      var html = esc(String(pickNudge(list, variant)).replace(/\{name\}/g, name).replace(/'/g, "’"));
+      if (variant === "ios") html = html.replace(/\bShare\b/, 'Share <span class="nico">' + icon("share", 16, 2) + "</span>");
+      if (variant === "inapp") html = html.replace(/\bmenu\b/, 'menu <span class="nico">' + DOTS + "</span>");
+      $("#nudgeTitle").textContent = NUDGE_TITLE[variant];
+      $("#nudgeBody").innerHTML = html;
+      host.className = "note nudge v-" + variant;
+      host.hidden = false;
+    }).catch(noop);
   }
 
   // -------------------------------------------------------------------------------------------
@@ -1247,6 +1332,7 @@ function fillFooter() {
     });
     return parts.join(" · ");
   }
+  var TAB_LABEL = { cat: "Cats", dog: "Dogs", pigeon: "Pigeons", crow: "Crows", cow: "Cows", squirrel: "Squirrels", monkey: "Monkeys", bird: "Birds", mystery: "Mystery" };
   var STAR = '<svg class="gstar" width="9" height="9" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5l2.7 6.4 6.8.5-5.2 4.4 1.7 6.7L12 16.9l-6 3.6 1.7-6.7-5.2-4.4 6.8-.5z" fill="currentColor"/></svg>';
   function revokeThumbs() {
     S.thumbs.forEach(function (u) { try { URL.revokeObjectURL(u); } catch (e) { /* ignore */ } });
@@ -1265,8 +1351,17 @@ function fillFooter() {
       S.stats = st; S.binderCount = st.total; updateBinderLinks();
       S.thumbs = list.map(function (it) { return it.thumbUrl; }).filter(Boolean);
       var total = st.total || list.length;
-      $("#bindTitle").innerHTML = total === 0 ? "No cuties yet" : total + (total === 1 ? " cutie" : " cuties") + " spotted" + (st.golden > 0 ? "<em> · " + st.golden + " golden</em>" : "");
-      $("#bindCounts").textContent = total === 0 ? "Snap one and it lands here." : countLine(st.byKind);
+      $("#bindTitle").innerHTML = total === 0 ? "No cuties yet" : total + (total === 1 ? " cutie" : " cuties") + (st.golden > 0 ? ' <span class="nw">spotted ·</span> <span class="badge-gold">' + st.golden + " golden</span>" : " spotted");
+      var tabs = "", dots = "";
+      E.kinds().forEach(function (k) {
+        var n = st.byKind && st.byKind[k.id] || 0;
+        if (n > 0) {
+          tabs += '<span class="ktab" style="--t:var(--sc-kind-tape-' + esc(k.id) + ')"><small>' + esc(TAB_LABEL[k.id] || k.name) + "</small>" + n + "</span>";
+          dots += '<i style="--t:var(--sc-kind-tape-' + esc(k.id) + ')"></i>';
+        }
+      });
+      $("#bindCounts").innerHTML = total === 0 ? '<span class="ktab hint">Snap one and it lands here.</span>' : tabs;
+      $("#albumTabs").innerHTML = dots;
       var html = list.map(function (it) {
         var gold = !!it.golden;
         return '<button class="slot' + (gold ? " golden" : "") + '" type="button" data-id="' + esc(it.id) + '" aria-label="' + esc(it.name) + ", cutie number " + esc(it.number) + '">' +
@@ -1279,6 +1374,7 @@ function fillFooter() {
       }
       $("#albumGrid").innerHTML = html;
       $("#bindCta").hidden = n > 0;
+      $("#emptyNote").hidden = n > 0;
     }).catch(function (e) { showError(e, { label: "Back to the start", act: function () { show("landing"); } }); });
   }
   function openSaved(id) {

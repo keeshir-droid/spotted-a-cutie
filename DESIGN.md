@@ -6,6 +6,80 @@ All card measurements are in pixels on the **1080×1350 card** (scale 1). The en
 
 ---
 
+## 0. PIVOT 2: The Scrapbook (Rishi, after board2; this is the rule)
+
+**This section overrides §1 (concept), §2.1 (UI colour use), §6.3 (small motions), §7 (screens) and §10 (checklist) wherever they disagree.** The cards, §8 and every card value in `palette.js` are unchanged. The "Sticker Club" (board2, animal stickers) is **withdrawn**. Rishi found it childish.
+
+> **The Scrapbook:** Spotted a Cutie is a junk journal kept by someone with taste. Every cutie gets filed, taped, stamped and annotated. The colour comes from coloured paper, washi tape and stamp ink; the playfulness comes from craft, surprise and funny, specific words.
+
+### 0.1 The definition (the rule every screen is judged by)
+
+- **PLAYFUL = wit, craft, surprise.** These are allowed and wanted:
+  - real paper things and printed ephemera: washi tape in colour, sticky notes, rubber stamps, photo corners, binder index tabs, punched holes, paper clips
+  - ticket stubs, gift tags, envelopes and postage stamps
+  - scalloped, pinked or torn paper edges
+  - handwritten asides (Caveat) with drawn arrows; tiny hand-drawn **marks** (arrows, squiggle underlines, stars and emphasis dashes, drawn as ink strokes, never as characters)
+  - confident bursts of colour from paper and ink; funny, specific copy
+- **CHILDISH = forbidden:** round cartoon faces, mascots or animal characters anywhere in the UI, a bubblegum or candy palette, chunky toy outlines and toy shadows, bouncy-everything.
+
+### 0.2 What Rishi loves (keep and extend)
+
+The taped sticky **notes** (the saving nudge), the physical **binder** (index tabs, punched holes, photo corners, pencilled empty slots), the **scalloped and paper-craft** edges, and the **foil "1 golden"** count in the binder header. Overall: "a little more colourful and a better vibe".
+
+### 0.3 The Kind screen ("Who did you spot?") is APPROVED AS BUILT. Do not change it
+
+It stays exactly as built in `src/app.js` and `src/styles.css` at the last commit: beige paper, the line-icon tiles (the 9 kind icons of §5), the taped print of the photo. **No colour tiles, no stickers, no new devices, no restyle.** Pivot tokens are not applied to it. Any change needs Rishi.
+
+### 0.4 Palette: paper-craft inks (riso and washi colours, slightly muted, chosen to sit beside the card inks)
+
+| Token | Hex | Use | Ink on it |
+|---|---|---|---|
+| `--sc-craft-tomato` | `#d4553a` | tape, stamps, drawn marks, the hot accent | 3.8 : 1, **large text only** |
+| `--sc-craft-tomato-deep` | `#b5432c` | stamp text and small coloured text | 4.9 : 1 on paper; cream on it 5.3 : 1 |
+| `--sc-craft-marigold` | `#e8a83e` | tape, tabs | 7.5 : 1 |
+| `--sc-craft-leaf` | `#7ea35b` | tape, tabs | 5.4 : 1 |
+| `--sc-craft-sky` | `#6ea7cc` | tape, tabs, postage | 6.0 : 1 |
+| `--sc-craft-rose` | `#e2898c` | tape, tabs | 6.1 : 1 |
+| `--sc-craft-lilac` | `#a897c9` | tape, tabs | 5.9 : 1 |
+| `--sc-kraft` | `#c8a679` | gift tags, ticket stubs | 6.8 : 1 |
+| `--sc-note` | `#f4d97a` | sticky notes | 11.2 : 1 |
+
+**Coloured paper sheets** are each ink at 32% over paper, with ink ≥ 9.4 : 1 on all of them: tomato `#ebc0b2` · marigold `#f2dab3` · sky `#cadae0` · leaf `#d0d9bc` · rose `#f0d0cc` · lilac `#ddd5df` · kraft `#e7dac6`. They're used as screen blocks and page backgrounds.
+
+**Per kind** (UI paper and tape colour; the card colour stays in `palette.js`): cat marigold · dog leaf · pigeon lilac · crow sky · cow leaf · squirrel tomato · monkey rose · bird sky · something else lilac.
+
+**Colour moments per screen:**
+- landing: sky sheet + tomato and marigold tape
+- reveal: the kind's paper, full screen
+- result: a kind-paper band with a pinked edge + kind tape on the card's corners
+- done: marigold sheet + a sticky note
+- binder: lilac sheet + coloured index tabs
+- error: rose sheet + an envelope with a tomato stamp
+- Kind screen: none (approved as built)
+
+**Rules:**
+- Text on colour is **ink**; never white or cream text on these colours, except cream on tomato-deep.
+- Gold still means golden only.
+- At most one sheet colour per screen; tape, tabs and stamps may use up to 3 inks on a screen.
+
+### 0.5 Type
+
+No change and no new font: DM Serif Display, the system sans and Caveat. League Gothic stays card-only. Rubber-stamp text is the sans at 800, UPPERCASE, +0.16em.
+
+### 0.6 Motion: quiet and physical
+
+- Notes, tags and tape **settle**: rotate (r ± 2°) → r and opacity in, 240 ms `--sc-ease`.
+- Stamps **thump**: the existing stamp ease, the only overshoot.
+- The reveal is unchanged (§6.2). Its background becomes the kind's paper in 260 ms, and the drawn underline under the name draws on in 300 ms.
+- No springs on controls, no wiggle, no idle loops except the golden shimmer.
+- Reduced motion: fades only.
+
+### 0.7 Withdrawn
+
+`design/stickers.js` and `design/board2.html` are deleted. Every animal-sticker rule from the first pivot is void. The 25 line icons of §5 (including the 9 kind icons used by the Kind tiles) stay.
+
+---
+
 ## 1. Concept: The Footpath Museum
 
 > **Every street animal you pass gets catalogued with the straight face of a natural-history museum: numbered, labelled, stamped and filed in an album. The only unserious thing is what the label says.**
@@ -313,167 +387,77 @@ Layout: "Meet…" and the name window sit **above** the card back, so the name i
 
 ---
 
-## 7. Screens
+## 7. Screens (the Scrapbook; the board is `design/board3.html`)
 
-**Global layout:** one column, 20 px side gutter, max width 480 px centred on desktop. The background outside the column is the same paper, and the column gets a 1 px `--sc-line` border on the left and right on wide screens. Spacing scale: 4, 8, 12, 16, 20, 24, 32, 40, 56. Light theme only. `theme-color` is `#f6f2ea`.
+**Global:**
+- One column, 20 px gutter, max 480 px. The family controls are unchanged from the original §7.1: the ink-blue pill primary, the outlined secondary, the quiet underlined button (its underline is now **tomato**), 8 px-radius chips, ruled fields and the 4 tool buttons. They are **flat: no toy outlines or offset shadows**.
+- Paper-craft devices (CSS in `board3.html`):
+  - `.sheet` + `.scallop` / `.pinked` edges
+  - `.washi` (84 × 22, stripes or dots over a craft ink, opacity .82, zigzag torn ends, rotated)
+  - `.stamp` (2.5 px border plus a 1.2 px inner border, speckle mask, sans 800 caps, tomato-deep or ink-blue)
+  - `.note` (sticky note, a slight rotation, washi on top, `--sc-shadow-paper`)
+  - `.ticket` (kraft, notched ends, a dashed perforation)
+  - `.gift` (a kraft tag with a punched hole)
+  - `.clip` (a drawn SVG paper clip)
+  - drawn marks (arrow, squiggle, star, emphasis dashes) as inline SVG strokes in tomato or ink-2
+- **Never over the photo or a card's text.** Tape may cross a card's corner, as if taping the print down.
 
-### 7.1 Components (sizes and states)
+### 7.1 Landing
+1. **Sky sheet** with the top bar (the wordmark; My cuties as a quiet link with a tomato underline).
+2. "Spotted a cutie?" (DM Serif 45.6) with three tomato emphasis dashes drawn at the "?", and the sub-line.
+3. **The card fan** (never personalised). A **tomato washi strip across the front card's top-left corner**, a dotted marigold strip on the right card's corner, and a paper clip on the left card. "real cats. fake names." in Caveat with a drawn arrow.
+4. The scalloped edge, then the buttons on paper.
+5. **The trust line is a rubber stamp** (tomato-deep, −3°): "FREE · NO ACCOUNT / your photos stay on your phone".
+6. The footer.
 
-**Primary button** (`Snap a cutie`, `Send`, `Done`)
-- Size: 56 px tall, full width or flex. Pill radius 999 (**pills are for buttons only**). Padding 0 24 px. Icon 22 px + 10 px gap + label.
-- Rest: `--sc-accent` fill, white label (system sans 600, 17 px).
-- Pressed: `--sc-accent-2` fill, translateY(1 px).
-- Focus: 3 px outline in `--sc-accent-soft`, offset 2 px, plus a 1.5 px inner ink ring.
-- Busy (the file is being made): the label stays, and a 12 px ring spinner of two 1.75 px arcs replaces the icon. Still enabled.
-- No hard shadows, no gloss, no gradient.
+### 7.2 Kind: APPROVED AS BUILT. Do not change (§0.3)
 
-**Secondary button** (`Pick a photo`, `Save image`, `Try another style`)
-- Same size and shape. Transparent fill, 1.5 px `--sc-ink` inset ring, ink label.
-- Pressed: `--sc-accent-soft` fill.
+### 7.3 Reveal
+- The full screen is the **kind's paper** with a faint ink dot grid (1.3 px every 22 px at .10).
+- "Meet…" (Caveat 30), then the name (DM Serif 52) with a **tomato squiggle underline** that draws on, and two drawn tomato marks (a star, and dashes).
+- The card arrives taped: **two washi strips on its top corners**.
+- The rarity stamp hangs off the bottom-right corner (ink-blue; foil for GOLDEN).
+- "tap to skip the drama" in Caveat.
 
-**Quiet button** (`Story size`, `My cuties`, `Spot another cutie`, `Delete`). This is the "disabled-looking-but-enabled" case. It's an **optional** action, so it's visually quiet but plainly tappable.
-- 44 px tall, no border, icon 20 px + label in system sans 600, 15 px, `--sc-ink-2`, underlined (1.5 px, offset 4 px, `--sc-line-2`).
-- Pressed: `--sc-accent-soft` background, radius 10.
-- **Rule: never grey out a control that works.** Quiet means ink-2 plus an underline, never 40% opacity. Contrast stays at 9 : 1.
+### 7.4 Result
+- A **kind-paper band** (236 px, pinked edge) behind the top bar and the card's top. **Washi in the kind's tape colour on the card's two top corners.**
+- Chips, the 4 tools, a rule, then "Where did you spot them?" with the field (pin in tomato-deep).
+- **"Who's this for?" is a kraft gift tag** (punched hole, "TO:" in tomato-deep sans 800 caps) holding the name field, followed by the reason chips.
+- Story size, then the sticky bar (Send · Save image).
 
-**Icon button** (back, close, binder in the top bar): 44×44, radius 12, no border at rest, icon 24 px ink. Pressed: accent-soft fill.
+### 7.5 Edit words and Adjust photo
+These are as in the original components: the sheet on paper with a flat scrim, and Adjust with a Caveat hint. The sheet's title gets a short washi strip in the kind's tape colour.
 
-**Tool button** (the result screen's 4 tools: New name · New personality · Edit words · Adjust photo)
-- A row of 4 equal cells (each ≈ 84×64 at 390). Stock fill, 1 px `--sc-line-2` border, radius 12. Icon 22 px on top, label below in system sans 600, 13 px, ink, 2 lines max, centred.
-- Pressed: accent-soft fill, and the die icon turns (§6.3).
+### 7.6 Done
+- A **marigold sheet**: the card thumbnail in black photo corners (−3°), a tomato **FILED** stamp ("No. 001 · 9 Oct") overlapping its corner, and "safe and sound" in Caveat with a drawn arrow to it. A scalloped edge.
+- "Larry is in your binder." (DM Serif 30) and "Cutie #1. A strong start." (Caveat).
+- **The saving nudge: a taped sticky note** (§0.2). It's one note per cutie, and the variant is chosen by platform:
+  - **generic** (note on a sky sheet): "tiny reminder" / "Your binder lives in this browser. Clearing it clears Larry. **Save the image** too, just in case."
+  - **iPhone Safari** (yellow note, dotted tomato tape): "keep Larry for keeps" / "On iPhone, tap **Share**, then **Add to Home Screen**. Your binder gets its own little door."
+  - **Instagram / WhatsApp in-app** (rose note, a paper clip and leaf tape): "you're inside an app" / "Larry won't be kept in here. Tap the menu, then **Open in browser**, and spot your next cutie there."
+  - (The content-writer may polish the words; the structure is: Caveat opener + 1–2 sans lines with one bold action.)
+- Buttons: Send to someone else, Try another style, Spot another cutie, My cuties (quiet). Then the footer.
 
-**Style chip** (6, horizontal scroll)
-- 44 px tall, radius **8**, padding 0 14 px 0 10 px. A mini swatch (14×18, a 4:5 card in that style's colours: §8 table, row "swatch") with a 1 px ink line at .3, 8 px gap, then the name in system sans 600, 15 px.
-- Rest: stock fill, 1 px `--sc-line-2` border, ink text.
-- Pressed: accent-soft fill.
-- Selected: `--sc-accent` fill, white text, the swatch gets a 1.5 px white ring. `aria-pressed="true"`.
-- Row: 8 px gaps, scroll-snap, a 20 px fade mask at whichever edge has more to scroll.
+### 7.7 Binder
+- **Lilac sheet**: "6 cuties spotted · " plus the **foil "1 golden" badge** (foil fill, ink serif, a 1.5 px foil-shadow ring, −2°). Under it, **kind index tabs**: top-rounded tabs in each kind's tape colour, "CATS 2" (sans 600 caps + tabular count).
+- **The album page**:
+  - cream, binding shadow, album grain and a paper shadow
+  - three punched holes
+  - **coloured index tabs** sticking out of the right edge, one per collected kind
+  - a paper clip on the top edge
+  - the 3-column grid with black photo corners (foil for golden; a drawn gold star by a golden number)
+  - empty slots up to the row end plus one row, with the next number pencilled in Caveat
+- The binder line underneath.
 
-**Reason chip** (8, wrapping in rows of 2–3): the same chip without a swatch, padding 0 14 px. Tap a selected one to clear it.
+### 7.8 Empty binder
+The lilac sheet with "No cuties yet". The album page with 3 empty pencilled slots and a **taped sticky note** over them: "nothing filed yet" / "Go outside. Someone fluffy is sitting on a scooter, waiting to be catalogued." Then **Snap a cutie**.
 
-**Kind tile** (3×3)
-- Size: (390 − 40 − 2×10) / 3 = **110×110**, radius 14, gap 10. Stock fill, 1 px `--sc-line-2` border.
-- Content: the icon (40 px, ink) centred at 42% height. The label below (system sans 600, 15 px, ink). A catalogue number top-left: "01"–"09" in system sans 600, 11 px, tabular, `--sc-ink-3`, tracking 0.06em. It's the museum-drawer detail.
-- Pressed: scale .97, accent-soft fill. Selected (140 ms before the screen changes): 2 px accent border.
-- No colour per kind on the tiles. They stay calm, and kind colours belong to the cards.
+### 7.9 Errors and loading
+- **Errors:**
+  - a **rose sheet** with an **envelope** (a drawn flap and a sky postage stamp with a perforated edge) stamped **RETURN TO SENDER**; the second line is error-specific ("not a photo", "can't open this one")
+  - a pinked edge, then the engine's title (DM Serif 28) and detail (sans 16, ink-2), and one primary button
+- **Loading:** a **kraft ticket stub**: "NOW PRINTING · No. 014" (sans 800 caps), "making Larry's paperwork…" (Caveat), and three dots that fill in turn (opacity only).
 
-**Text field** (Where, the recipient's name, the Edit lines). It's a ruled form line, like a museum label form.
-- Label above: `--sc-fs-label` (12 px, UPPERCASE, +0.1em, `--sc-ink-3`), 8 px gap.
-- Box: 52 px tall, stock fill, radius 10 10 4 4, 1 px `--sc-line-2` border with a **2 px `--sc-ink-3` bottom border**. Padding 0 56 px 0 14 px. Optional leading icon (the pin) at 14 px, then the text at 40 px. Input in system sans 500, 17 px, ink. Placeholder in `--sc-ink-3`.
-- Counter right inside: "0/32", system sans 13 px, tabular, ink-3. It turns `--sc-bad` at the limit.
-- Focus: bottom border becomes 2 px `--sc-accent`, plus a 3 px `--sc-accent-soft` ring outside.
-- Line reroll (in the Edit sheet): a 44×44 icon button to the right of the field (stock fill, 1 px line-2 border, radius 10, the die icon).
-
-**Bottom sheet** (Edit words)
-- Rises from the bottom, max height 88svh, `--sc-paper` background (not stock: it should feel like a page), top radius 20.
-- A grab handle 36×4 in ink at .2, 8 px from the top. Title "Edit words" (DM Serif Display 24 px) and a close icon button.
-- Rows: label + field + die, 16 px apart, separated by nothing (the labels are enough).
-- Done: a sticky primary button at the bottom with paper behind it.
-- Scrim: flat `rgba(28,36,51,.38)`. **No blur.**
-
-**Sticky bar**
-- Full width, solid `--sc-paper` (no transparency, no blur), a 1 px `--sc-line` top border. Padding 12 px 20 px, plus 12 px plus the safe area at the bottom.
-- Result screen: **Send** (primary, flex 1.35, share icon) and **Save image** (secondary, flex 1, save icon), 10 px gap.
-- **Story size** sits **above** the bar, as a quiet button, right-aligned, at the end of the scrolling content.
-
-**Top bar**: 52 px. Back icon button on the left, a centred small title (system sans 600, 15 px, ink-2, e.g. "Cutie #014" in tabular figures), an icon button on the right (binder). No background, no border, so the paper continues.
-
-**Section** (on the result screen): an H2 (DM Serif Display 22) or a small label, 12 px gap, then the content. Sections are separated by 24 px of space plus a 1 px `--sc-line` rule. No boxes or panels around sections.
-
-**Wordmark** (landing top bar): "Spotted a cutie" in DM Serif Display 20 px, ink, preceded by a tiny accession tag outline (20×12, the notched-ticket shape, 1.5 px stroke). The favicon: the notched tag in ink-blue with a cream "?".
-
-### 7.2 Landing (Step 1)
-
-Top to bottom at 390×844:
-1. **Top bar** (52): the wordmark on the left. On the right, when cards exist, a quiet link "My cuties (12)" with the binder icon.
-2. **Headline** (left-aligned, 20 px gutter, 12 px below the bar): "Spotted a cutie?" in `--sc-fs-hero`, one line if it fits, otherwise two. **Left-aligned, not centred.** It reads like a zine cover, not a SaaS hero.
-3. **Sub-line** (8 px below): PLAN's line, system sans 17/1.45, ink-2, max 32ch, left-aligned.
-4. **The sample-card fan** (24 px below, about 300 px tall, centred, the visual centre of the page): three sample cards rendered at 0.4, **never personalised** (no recipient line or stamp, so the first impression is the card itself, not someone else's gift), laid out like a hand of cards:
-   - front card 236 px wide (295 tall), rotated −2°, z-index 3
-   - left card 188 px wide, rotated −7°, centre offset x −70, bottom +14, z-index 1
-   - right card 188 px wide, rotated +6°, centre offset x +70, bottom +18, z-index 2
-   - (step 2: bigger than first planned, because the landing had ~170 px spare above the fold; the fan box is 368 px tall and full-bleed, so the rotated side cards never clip)
-   - each with `--sc-shadow-print`, a 3 px radius, and the rotation origin at the bottom centre
-   - **One Caveat aside** next to the fan (Caveat 24 px, ink-2, rotated −4°, top-right of the fan), with a hand-drawn arrow (1.75 px stroke, round caps) curving toward the front card. The words come from the content-writer or Rishi, e.g. "real cats. fake names."
-5. **Buttons** (24 px below the fan): **Snap a cutie** (primary, camera icon, full width) and, 12 px below, **Pick a photo** (secondary, photos icon, full width).
-6. **Trust line** (14 px below, centred, `--sc-fs-small`, ink-3, the lock icon at 14 px): "Free. No account. Your photos stay on your phone."
-7. **Footer**: "More from Risheek" (the kit footer, unchanged, on paper).
-
-Nothing else: no feature list, no three cards with icons, no explainer.
-
-### 7.3 Kind: "Who did you spot?" (Step 3)
-
-- **Top bar**: back.
-- **Title first** (8 px below the bar, left-aligned): "Who did you spot?" (`--sc-fs-h1`, one line) and under it one quiet line (`--sc-fs-small`, ink-3) from the content-writer, e.g. "Tap what it is. We'll handle the paperwork."
-- **The photo as a print** (changed at step 2: the side-by-side version left a dead gap and made the photo too small): a 168×210 crop (4:5, the auto-crop centre) on a stock border (8 px sides and top, 26 px bottom, like an instant print), rotated −3°, `--sc-shadow-print`, centred in the space between the title and the tiles (auto margins).
-- **The 3×3 tile grid**, pinned to the bottom (28 px above the screen's bottom edge), under the thumb. Tiles as in §7.1, in the PLAN's order. A two-word label ("Something else") wraps to two centred lines (max width 92 px).
-- **Nothing else.** No continue button: a tap on a tile goes straight to the reveal.
-
-### 7.4 Reveal (Step 4)
-
-- Paper background, no top bar (a 44 px close icon button sits top-left at 30% opacity and becomes 100% when tapped. It cancels to the kind screen).
-- Vertical stack, centred: "Meet…" (Caveat 30, ink-2) → the name window (DM Serif Display 52, ink, window 62 px tall, width 350) → 24 px → **the card back** → the card front after the flip.
-- **The card back** (CSS + inline SVG, 300×375, radius 14):
-  - ink-blue `#1f3a5f` field
-  - a fine engraved cross-hatch: two `repeating-linear-gradient`s at 45° and −45°, 1 px cream `#f8f1e2` lines at alpha .07 every 6 px (like old card backs and banknotes)
-  - a double rule inset 10 px (1 px cream at .7) and 14 px (1 px cream at .35)
-  - in the centre, **a cream bookplate** 168×112, `#f8f1e2`, with **concave (cut-in) corners** of radius 10 (the label shape of an old specimen label), holding a large "?" in DM Serif Display 72 px, ink
-  - under the plate, the next number: "#014" in system sans 600, 12 px, tracking 0.2em, cream at .8, tabular
-  - at the bottom, "SPOTTED A CUTIE" in system sans 600, 10 px, tracking 0.24em, cream at .6
-- **The stamp** (DOM, on the reveal only, never in the image): a 104×64 rubber stamp (§4 recipe in CSS/SVG: double border, radius 6), in `--sc-accent` at .86, rotated −9°, centred on the card's **bottom-right corner**, hanging off the edge by about 30% (moved from top-right: it collided with the Trading card's stat roundel). Inside, the rarity word in system sans 700, 15 px, tracking 0.18em ("COMMON", "UNCOMMON", "RARE"), and under it the rarity mark (§5) at 10 px. The texture: an SVG mask of speckles (dropout .09). Golden: the word is **GOLDEN**, the stamp is filled with foil, and the text is ink.
-- Motion: §6.2.
-
-### 7.5 Result (Steps 5 and 6)
-
-Scrolling content above the sticky bar, top to bottom:
-1. **Top bar**: back (to the kind screen) · "Cutie #014" · binder icon.
-2. **The card** (8 px below): the `card.render(0.5, "card")` canvas shown at **310×388** (40 px side margins), radius 3, `--sc-shadow-print`, no rotation. Tap opens it full screen on paper, with a close button. When personalised, nothing extra is added on screen: the card itself shows it.
-3. **Style chips** (16 px below): a sideways scroll, full bleed to the screen edges, starting at the 20 px gutter.
-4. **Tools row** (12 px below): New name · New personality · Edit words · Adjust photo (tool buttons, §7.1).
-5. Rule, then **"Where did you spot them?"**: the H2, then the field with the pin icon (placeholder "on a scooter seat", counter 0/32).
-6. Rule, then **"Who's this for?"**: the H2, the name field (placeholder "Priya", counter 0/16), 12 px, then the 8 reason chips, wrapping.
-7. 16 px, then **Story size** (quiet button, story icon), right-aligned. Under it 96 px of space so the bar never covers it.
-8. **Sticky bar**: Send · Save image.
-
-At 844 tall, the card, the chips, the tools and the top of the "where" field are visible without scrolling, with the bar under the thumb.
-
-### 7.6 Edit words (the sheet)
-
-Section 7.1's bottom sheet. Its rows come from `SC.content.fieldsFor(style)`: each row has a label (the FIELDS label, e.g. "MOOD"), a field (max `SC.LIMITS.line`, the name limited to `SC.LIMITS.name`) and a die. Edits update the card live, debounced 150 ms. The sheet sits above the keyboard (visualViewport).
-
-### 7.7 Adjust photo
-
-- Top bar: back ("Cancel" as a quiet text button on the right).
-- **The window, big**: the current style's photo window (`card.window()`), scaled to 350 px wide, centred. The photo outside the window shows at **.35 opacity** over paper, so you can see what's cut. The window has a 1.5 px ink frame at .6 and the style's corner radius.
-- One Caveat hint under it (Caveat 22, ink-2): "drag to move · pinch to zoom".
-- A zoom slider for one-thumb use: a 44 px tall range, 2 px ink track, 22 px stock thumb with a 1.5 px ink ring, accent fill to the left. Labelled with tiny minus/plus marks.
-- Sticky bar: **Done** (primary, check icon).
-
-### 7.8 Done (Step 7)
-
-- Paper. A small **album slot** at the top (about 150×188): the card's thumbnail drops in with corner mounts (§6.3).
-- Under it: "Larry is in your binder." (DM Serif Display 30, ink, centred, balanced) and "Cutie #14." in Caveat 30, ink-2, rotated −2°.
-- Buttons, stacked, 12 px apart: **Send to someone else** (primary) · **Try another style** (secondary) · **Spot another cutie** (secondary) · **My cuties** (quiet, binder icon).
-- Footer.
-
-### 7.9 Binder: "My cuties" (Step 8). A real album page
-
-- **Top bar**: back · "My cuties" · nothing.
-- **Header** (on paper, left-aligned): "14 cuties spotted" in DM Serif Display 30, then " · 1 golden" in the same face in `--sc-gold-ink` (only when golden > 0). Under it, the per-kind counts in system sans 14 px, ink-2, tabular: "5 cats · 4 dogs · 3 pigeons · 2 crows".
-- **The album page** (16 px below, full bleed): `--sc-album` background with grain .03 (a CSS SVG-noise tile). A soft binding shadow along the left edge: 14 px gradient `rgba(60,40,10,.07)` → 0. **Three punched holes** in the left margin (circles 10 px, `#e2d8c4`, inset shadow `inset 0 1px 2px rgba(60,40,10,.25)`) at 15%, 50% and 85% of the page height. Padding 24 px top, 20 px right, 28 px left.
-- **The grid**: 3 columns, 12 px column gap, 22 px row gap. Each slot is about 104×130 (4:5):
-  - **Filled slot:** the card's thumbnail (radius 2, `--sc-shadow-print`), held by **4 black corner mounts** (§4). Under it, the name in Caveat 18 px, ink, and "#014" in system sans 11 px, ink-3, tabular, on one line. **Golden:** a 2 px foil edge (`border-image` with the foil ramp), foil corner mounts instead of black, and the rarity mark in foil next to the number.
-  - **Empty slots:** after the last card, the page always shows empty slots up to the end of the row plus one more row (at least 3). Each has 4 corner mounts outlined at .22 (1 px ink, no fill) and the **next number pencilled in** (Caveat 22 px, ink at .3, centred: "15", "16", "17"…). It's the collector's itch, done with craft.
-- Under the page, on paper: "Your cuties live on this phone only. Clearing your browser clears them." (`--sc-fs-small`, ink-3, centred).
-- **The opened card** (Result) gets **Delete** as a quiet button (trash icon, `--sc-bad` text) at the very end of the content. The confirm is a small sheet: "Remove Larry from your binder?" with **Remove** (a filled `--sc-bad` button, white text) and **Keep** (secondary).
-- **Empty binder** (the first visit): one album page with 3 empty slots ("1", "2", "3" pencilled in) and a primary **Snap a cutie**.
-
-### 7.10 Errors (one friendly message, one button)
-
-- Centred stack: **the empty specimen frame** (an 88×110 outline: four corner mounts at .5 and a dashed 1 px rectangle inside, ink-3, rotated −2°). Then the title (DM Serif Display 28, ink, balanced), the detail (system sans 16, ink-2, max 30ch) and one primary button. The engine's `title` and `detail` are used as they are.
-- The binder-unavailable case isn't a full screen: it shows as a one-line note on the Done/landing screens (`--sc-fs-small`, ink-2, with the lock icon).
-
----
 
 ## 8. The 6 card styles: art direction
 
@@ -635,48 +619,71 @@ The content-writer writes the jokes. This section is about how UI words are set:
 
 ---
 
-## 10. The aesthetic checklist (for the ui-verifier)
+## 10. The aesthetic checklist (for the ui-verifier; the Scrapbook)
 
-Mark each PASS or FAIL against the named screenshots.
+Mark each PASS or FAIL against the named screenshots. The shell is compared with `shots/board3-*.png`, the cards with `shots/board-*.png`, and the Kind screen with its last approved build.
 
-1. **The photo is the hero.** On every card, the photo window is the largest single element by area. On the result screen, the card is the largest element.
-2. **Three faces max.** The UI chrome of any screen uses only DM Serif Display, the system sans and Caveat. League Gothic never appears outside a card image. No card uses more than DM Serif Display + League Gothic + Caveat.
-3. **No emoji, anywhere.** None in the UI, on cards or in the reveal. Hearts, pins, dice, ✕ and rarity marks are drawn shapes.
-4. **One icon set.** Every icon has the same stroke (1.75 at 24 px), round caps, no fills except dots, and no faces on animals.
-5. **Gold discipline.** Gold or foil appears only on golden cards, golden binder edges and mounts, the golden reveal, and the binder's golden count. Never on a normal button, chip, tile or heading.
-6. **The signature is on every card.** The notched accession tag (`#NNN` + rarity mark, 176×56 at scale 1) and the uppercase address beside it appear on all six styles, identical in construction. On golden cards the tag is foil.
-7. **Card numbers are `#014`:** 3 digits, zero-padded, evenly spaced figures.
-8. **Nothing collides.** No text overflows its box, overlaps another text slot or touches a photo edge (≥ 12 px clear at scale 1). The exceptions are deliberate overlaps: stamps, tape, the ribbon, the seal, the banner.
-9. **Contrast.** Body text ≥ 4.5 : 1, large text and the address ≥ 3 : 1, in the screen UI and on cards (the token pairs in §2).
-10. **One primary per view.** One ink-blue filled button per screen view. Selected chips are the only other ink-blue fills.
-11. **Big targets.** Primary buttons 56 px, chips and icon buttons ≥ 44 px, kind tiles ≥ 96 px (110 at 390 wide).
-12. **No shadow on UI panels.** Shadows appear only on physical objects: cards, prints, thumbnails, the fan.
-13. **Not everything is a pill.** Pills are only buttons. Chips have 8 px corners, tiles 14 px, fields a ruled bottom line.
-14. **Texture is felt, not seen.** Grain reads as paper at phone size and never as a noise filter. The UI page itself has no texture (only the binder's album page, ≤ 3%).
-15. **Each style is its object at thumbnail size.** At 104 px wide in the binder, you can tell Minimal, Trading, Polaroid, Wanted, Dating and News apart by shape and colour alone.
-16. **Golden is unmistakable but not loud.** At thumbnail size the foil is visible. There's no glow, neon, rainbow or particles.
-17. **The personal line is there.** It sits where PLAN §5.4 says, in ink-blue (or as the headline on News), and it fits.
-18. **Real typography.** Curly quotes and apostrophes, a single-character ellipsis, middle dots with spaces, en dashes. No straight quotes on screen or on cards.
-19. **One big moment.** The reveal (spin, flip, stamp) is the only long animation. Every other transition is ≤ 300 ms, and nothing bounces except the stamp's single overshoot.
-20. **Reduced motion.** With reduced motion on, there's no spin, flip, shimmer, fan cycling or slide: only fades.
-21. **Muted colour.** No primary red, yellow or blue anywhere. Trading cards use exactly the kind ink and its spot ink in §2.3 / §8.2. No card text under 30 px on the Trading card (the address 26 and the stamp label 26 excepted).
-22. **Messy photos look intentional.** The scooter cat (loud tiles and a bin), the zoomed far-away pigeon and the crow in flight look deliberate in every style. Colours are calmed, nothing is blown out or muddy, and the halftone and sepia still read as an animal.
-23. **The landing is a zine cover, not a SaaS page.** The headline is left-aligned, the sample-card fan is the visual centre, there are two buttons, and there's no feature list or icon cards.
-24. **The binder is an album page.** Cream page, punched holes, black corner mounts, pencil-numbered empty slots. It isn't a plain image grid.
-25. **Family.** Warm paper, the serif headings, the ink-blue accent, Caveat, and the "More from Risheek" footer on the landing, Done and binder screens.
+1. **The photo is the hero.** On every card the photo window is the largest element. On Result, Reveal and Done, the card is the largest thing on screen. No tape, stamp, note or clip covers the photo or card text (tape may cross a card's corner).
+2. **Kind screen untouched.** "Who did you spot?" matches the approved build exactly: beige, line-icon tiles, no colour tiles, no stickers.
+3. **A colour moment on every other screen.** Landing, Reveal, Result, Done, Binder, Empty binder and Error each have at least one confident colour moment from paper, tape, tabs or stamp ink (§0.4).
+4. **Playful, not childish (§0.1).** Every decorative element is a real paper or print object, or a drawn ink mark. Name any element that is a character, a face or a toy-like shape.
+5. **One craft palette.** Colours come only from §0.4 (plus paper, ink, ink-blue, the card inks inside cards, and foil for golden). No candy or bubblegum colours.
+6. **Text on colour is ink.** No white or cream text on craft colours (except cream on tomato-deep). Tomato is used for shapes and large text only. Body ≥ 4.5 : 1, large ≥ 3 : 1.
+7. **Flat controls.** The family buttons, chips, fields and tools: no thick toy outlines, no offset toy shadows, no gloss.
+8. **The saving nudge** is a taped sticky note on Done, with the right platform variant.
+9. **The binder is a real album:** punched holes, coloured index tabs, photo corners, pencilled empty slots, and the foil "1 golden" badge.
+10. **Three faces max** (DM Serif Display, system sans, Caveat). League Gothic only inside card images.
+11. **No emoji anywhere.** Stars, hearts and arrows are drawn.
+12. **Gold discipline.** Foil only on golden cards, golden mounts and stars, the "1 golden" badge, and the GOLDEN stamp.
+13. **The signature is on every card** (the accession tag and the address), unchanged; numbers are `#014`; the UI says "Cutie #14".
+14. **Big targets:** 56 px primary, ≥ 44 px chips and icon buttons. **One primary per view.**
+15. **Real typography:** curly quotes, a real ellipsis, middle dots, en dashes.
+16. **Motion is quiet:** notes settle, stamps thump once, and the reveal is the one big moment. No springs on controls, no idle loops except the golden shimmer. Reduced motion: fades only.
+17. **Cards unchanged** against `shots/board-*.png` and the M1 renders.
+18. **Family:** paper, ink-blue primary, serif headings, Caveat, and the "More from Risheek" footer on landing, Done and binder.
 
-### FAIL triggers (the "Never" list). Any hit is a FAIL, with the file and the spot
+### FAIL triggers (the Never list). Any hit is a FAIL, with the file and the spot
 
-- purple/blue/pink gradient backgrounds, glassmorphism or backdrop blur, neon glow, mesh blobs, "aurora" effects
-- sparkles, rockets or emoji used as UI icons or decoration
-- thick black cartoon outlines, comic speech bubbles, bouncy mascots, googly eyes, clipart animals, kawaii faces (including faces on the kind icons)
-- game-UI chrome: health or XP bars, glossy 3D buttons, primary red/yellow/blue, Pokémon-yellow borders, energy symbols, "HP"
-- the generic SaaS layout (centred hero + three feature cards with icons), drop shadows on every card or panel, everything a pill
-- Inter or Roboto everywhere, or more than three typefaces on one screen
-- bounce or elastic on every element, confetti, animation without purpose
-- stock photos or illustration filler, lorem ipsum, the words "magic", "AI", "generate", "upload", "process", "render", "filter"
+- **cartoon animal characters, mascots, or faces of any kind in the UI** (stickers, illustrations, kawaii eyes, blush)
+- a **candy or bubblegum palette**, or colours outside §0.4
+- **chunky toy outlines** or offset toy shadows on controls; bouncy or springy everything
+- any change to the approved Kind screen
+- gradient backgrounds, mesh blobs, glassmorphism or backdrop blur, neon glow, "aurora" effects
+- emoji used as icons, decoration or text; sparkle shapes
+- clip-art, stock illustration, or AI-generated images
+- game-UI chrome (HP or XP bars, glossy 3D buttons, Pokémon-yellow borders, energy symbols)
+- the generic SaaS layout (centred hero + three feature cards with icons)
+- white or light text on a craft colour (except cream on tomato-deep); body text under 4.5 : 1
+- tape, stamps or notes covering the photo or a card's text
+- more than three typefaces on a screen; League Gothic in the UI
+- confetti, animation without purpose
+- lorem ipsum; the words "magic", "AI", "generate", "upload", "process", "render", "filter"
 
----
+## 11. Build notes for the site-builder (the Scrapbook)
+
+1. **Tokens:** `src/design-tokens.css`, PIVOT 2 block:
+   - `--sc-craft-*`, `--sc-kraft`, `--sc-note`, `--sc-clip`, `--sc-sheet-*`
+   - `--sc-kind-paper-<kind>` and `--sc-kind-tape-<kind>`, `--sc-moment-*`
+   - `--sc-washi-stripes`, `--sc-washi-dots`, `--sc-washi-alpha`
+   - `--sc-stamp-mask`, `--sc-shadow-paper`, `--sc-dur-settle`
+   - The edge recipes (scallop, pinked) are comments there; apply them on the element so its `--c` resolves.
+   - Every token the current site uses is unchanged. The old Sticker Club tokens were never referenced and are gone.
+2. **Markup and CSS reference:** `design/board3.html`. Copy `.sheet`, `.scallop`, `.pinked`, `.washi` (+`.dots`), `.stamp`, `.note`, `.ticket`, `.gift`, `.clip`, `.envelope`, `.badge-gold`, `.ktab`, `.album` (holes, tabs), `.reveal`, `.res-band`, `.trust-stamp`. The drawn marks (arrow, squiggle, star, dashes, paper clip) are inline SVG there; copy the paths.
+3. **Kind screen:** do not touch (§0.3). Don't apply any pivot class or token to it.
+4. **Per kind:** set `--c: var(--sc-kind-paper-<kind>)` on the reveal and the result band, and `--t: var(--sc-kind-tape-<kind>)` on the result's corner tape and binder tabs. `theme-color` follows the screen's sheet colour.
+5. **Placement:**
+   - Washi is 84 × 22 (60–96 wide), rotated between −40° and +40°, crossing corners only.
+   - Stamps are rotated between −12° and +3°.
+   - Notes are rotated between −3° and +1.5°.
+   - At most 4 devices per view.
+6. **Spacing:** 20 px gutter; a 12 px scallop or 7 px pinked edge under each sheet; 26–34 px from an edge to the next content.
+7. **Motion:**
+   - Notes, tags and tape settle in (rotate ±2° → rest, opacity, 240 ms).
+   - Stamps use `--sc-ease-stamp` once.
+   - The reveal's underline draws with `stroke-dashoffset`.
+   - All of this goes inside `prefers-reduced-motion: no-preference`; otherwise use opacity only.
+8. **The saving nudge:** detect in-app browsers by user agent (`Instagram`, `FBAN`/`FBAV`, `WhatsApp`, `Line`), iOS Safari (iPhone or iPad, not `CriOS`/`FxiOS`, not standalone), else generic. Show one note on Done.
+
 
 ## Proposed PLAN changes
 

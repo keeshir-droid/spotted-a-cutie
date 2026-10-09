@@ -1,5 +1,189 @@
 # VERIFY.md: Spotted a Cutie
 
+## FINAL STATUS (Pass 4, last check), 2026-10-09
+
+**Nothing is failing.** All Pass 4 items pass. Two cosmetic notes are listed below; neither blocks shipping.
+
+**Done stamp (FILED / ON ITS WAY / SAVED), now below the card on the paper:**
+
+| Check | Result | Evidence |
+|---|---|---|
+| Covers any pixel inside the card edge, on any of the 6 styles | **PASS: no.** Measured: the card bottom is y 218 and the stamp's rotated box starts at 220 at 390. At 360 it's 204 and 206. Zoomed at 3×, there's a clear paper gap on Trading, Wanted, Polaroid, Dating (♥ button and address fully visible), News and Minimal | p6-stamp-*-390.png, p6-stamp-*-360.png, p6-done-*-390/360.png |
+| Runs off-screen | **PASS: no.** Stamp right edge 321 of 390 and 306 of 360; no horizontal scroll | (measured) |
+| Hits the nudge note or buttons | **PASS: no.** The stamp ends at 280 (390) and 266 (360); the title starts at 320 and 290 | (measured) |
+| Hits the scallop | **PASS at 390** (≈10 px clear). **At 360 the stamp's bottom edge just touches the top of the scallop bumps** (stamp bottom 266 = sheet bottom 266). It covers nothing and reads as a stamp at the sheet's edge. Cosmetic only. Optional: give the sheet ~6 px more bottom padding at ≤ 360. Owner: site-builder | p6-stamp-dating-360.png, p6-blocked-saved-360.png |
+| "safe and sound" fully visible at 360 | **PASS.** The whole phrase is visible. Cosmetic: at 360 the arrow's tip now ends behind the card's left edge (on Dating it disappears into the card). It still points at the card | p6-done-minimal-360.png, p6-stamp-dating-360.png |
+| Blocked variants | **PASS.** Sent: "Sent." / "Cutie #1." / **ON ITS WAY · sent, not filed**. Saved (Save image from a blocked session): "Saved." / **SAVED · to your photos**. Both have no "safe and sound" and no "strong start", and the "no binder here" note reads cleanly | p6-blocked-sent-390/360.png, p6-blocked-saved-390/360.png |
+| Kind screen unchanged | **PASS**, identical to p5/p4/rv kind shots | p6-kind-390.png, p6-kind-360.png |
+
+**Tests:** `node tests/page-check.js http://localhost:8001` **PASS** (0 failures).
+- `binder-test`: pass
+- `engine.test`: 39,316 checks, 0 failed
+- `export-test`: pass
+- `sample-test`: pass
+
+No console errors, exceptions or failed requests in the run. No code or tests changed.
+
+**Final Pass 4 counts:**
+
+| Layer | PASS | FAIL |
+|---|---|---|
+| Function | 18 | 0 |
+| Aesthetic | 19 | 0 |
+
+The "Never" list has no hits. What remains is Rishi's real-phone list (the "Needs a real phone" sections below).
+
+---
+
+## Pass 4 re-check (superseded by FINAL STATUS above; item A is now fixed), 2026-10-09
+
+**Still failing (top of the list):**
+
+| # | Problem | Where | Owner |
+|---|---|---|---|
+| A | **The FILED stamp on Done still covers card text on 5 of 6 styles.** It now sits above the photo corner (that part is fixed) and lower, which clears **Trading**, whose address sits above its bottom border. But on the other five the colophon sits at the very bottom of the card, and the stamp lands on it:<br>• **Polaroid:** covers the tag and the address.<br>• **Minimal:** covers the tag and the address.<br>• **Dating:** covers the address and half the ♥ button.<br>• **News:** covers the address after "SPOTTE…".<br>• **Wanted:** the stamp's top border runs through the bottom of the address letters.<br>The blocked-route "ON ITS WAY" stamp does the same.<br>Fix: either move the stamp off the card's bottom edge entirely (e.g. on the paper to the right of the card, overlapping only the bottom-right photo corner, so drop it ~40 px and right ~30 px), or place it on the top-right corner, where no style has text under the corner mount. | p5-filed-polaroid/minimal/dating/news/wanted.png (pass: p5-filed-trading.png); p5-done-polaroid-360.png; p5-error-binder-390.png | site-builder (art-director if it moves to a new corner) |
+| B | Minor: at 360×640 the Done aside "safe and sound" runs under the card's left edge ("sound" is clipped). | p5-done-polaroid-360.png | site-builder |
+
+**Now passing (the other 6 items from the Pass 4 list):**
+
+| # | Item | PASS / FAIL | Evidence |
+|---|---|---|---|
+| 1 | Landing aside at 360 | **PASS** | "real cats. fake names." and the arrow now sit above the fan, clear of the card and tape, at 360 and 390 (p5-landing-360.png, p5-landing-390.png) |
+| 2 | FILED stamp vs photo corner | **PASS** | The stamp is now above the mount; no black corner through it (p5-filed-*.png) |
+| 2b | FILED stamp vs card text | **FAIL** | See A |
+| 3 | Reveal at 360×640: stamp / skip text / X / star | **PASS** | COMMON and GOLDEN stamps end above "tap to skip the drama"; the X and the star no longer overlap (p5-reveal-stamp-17-360.png, p5-reveal-golden-360.png) |
+| 4 | Blocked Done wording + stamp | **PASS** | The real blocked route (`?screen=error-binder`) shows "Sent." + "Cutie #1." (no "strong start"), no "safe and sound" arrow, and a stamp reading **ON ITS WAY / sent, not filed**. The note is "no binder here" / "Mr. Giles can’t stay in this browser, but fits in your photos.", so it no longer repeats itself (p5-error-binder-390/360.png). Forcing `&nudge=blocked` on a working binder still shows FILED + "in your binder", which is expected for a dev override |
+| 5 | In-app note clip | **PASS** | The clip moved to the top-right; it's clear of the title (p5-inapp-zoom.png) |
+| 6 | Binder header at 360 / 390 | **PASS** | 360: "8 cuties / spotted · [1 golden]", with the dot and badge kept together. 390: one line (p5-binder-360.png, p5-binder-390.png) |
+| 7 | Reveal underline width | **PASS** | The squiggle spans the name for "Ambrose the Third" (17 chars) and for "Rick" (p5-reveal-name-17-390.png, p5-reveal-name-4-390.png, p5-reveal-stamp-17-360.png) |
+| — | Rewritten nudge lines | **PASS** | `{name}` is filled in each variant, no braces are left, and the icons show (share on iOS, ⋯ on in-app "menu"). The tone is warm and gender-neutral ("Send Mr. Giles to someone nice.", "Your binder has begun.") |
+
+**Kind screen:** **PASS, unchanged.** It matches p4-kind and rv-kind at 390 and 360 (p5-kind-390.png, p5-kind-360.png).
+
+**Regression scan (result, binder, empty binder, errors at 390 and 360):** **PASS**, nothing new. See p5-result-390/360.png, p5-binder-390/360.png, p5-binder-empty-390.png and p5-error-390/360.png. No console errors, exceptions or failed requests in the run.
+
+**Tests:** page-check **PASS** (0 failures). Engine tests:
+- `binder-test`: pass
+- `engine.test`: 39,316 checks, 0 failed
+- `export-test`: pass (it still prints a stack trace from what looks like its deliberate toBlob-failure case)
+- `sample-test`: pass
+
+No tests were changed.
+
+**Pass 4 final counts:**
+
+| Layer | PASS | FAIL |
+|---|---|---|
+| Function | 18 | 0 |
+| Aesthetic | 18 | 1 |
+
+The aesthetic FAIL is item A, under checklist #1 ("nothing covers card text"). Item B is minor. The "Never" list has no hits.
+
+---
+
+## Pass 4 (first run, superseded by the re-check above): The Scrapbook restyle + saving nudge (2026-10-09)
+
+What was checked: every screen at 390×844 and 360×640, with `p4-*-390.png` and `p4-*-360.png` in `shots/`, all opened with Read. I drove the pages with `tests/cdp.js` in one Edge, waited up to 60 s for each sample-loading page, and changed no code.
+
+### Still failing (fix list, most important first)
+
+| # | Problem | Where on the image | Owner |
+|---|---|---|---|
+| 1 | **Landing at 360×640: the front card and its tomato tape cover the handwritten aside.** Only "…ats. fake names." shows, and the arrow is hidden. | top of the fan, p4-landing-360.png | site-builder |
+| 2 | **FILED stamp on Done covers the card's own text and sits under a photo corner.** The stamp lies over the card's address ("SPOTTED-A-CUTIE…") at the bottom-right. The black bottom-right photo corner is drawn **on top of** the stamp, between "No. 001 ·" and "9 Oct". Fix: put the stamp above the mounts in z-order and move it ~24 px further off the card, so it overlaps only the corner mount and the paper. | p4-done-filed-zoom.png, p4-done-*-390.png | site-builder |
+| 3 | **Reveal at 360×640: the COMMON stamp sits on "tap to skip the drama"**, and the close X overlaps the drawn tomato star. | bottom and top-left, p4-reveal-stamp-dog-360.png | site-builder |
+| 4 | **Done when the binder is blocked still says "safe and sound" and shows a FILED stamp**, although nothing was filed. Its note also repeats itself: the title is "no binder here" and the body starts "No binder here, so…". | p4-error-binder-390.png | site-builder (hide the arrow and stamp when blocked); content-writer (the body line) |
+| 5 | **Inapp nudge: the paper clip sits on the "y" of "you’re inside an app".** | top-left of the note, p4-done-inapp-note-zoom.png | site-builder |
+| 6 | **Binder header at 360: "• 1 golden" wraps to its own line, starting with the middle dot.** Keep "· 1 golden" together with the count, or drop the dot when it wraps. | p4-binder-360.png | site-builder |
+| 7 | **The reveal squiggle underline is a fixed width**, so long names outrun it ("Montgomery" is underlined only to "gom"). | p4-reveal-reduced-700ms.png | site-builder |
+
+None of these are "Never" list hits: no cartoon characters, faces, candy palette, toy outlines, glow or emoji anywhere.
+
+### Tests
+- `node tests/page-check.js http://localhost:8001`: **PAGE CHECK: PASS** (0 failures, no console errors, no failed requests). It did not need updating for the new markup.
+- `tests/engine/binder-test.js`: all passed. `engine.test.js`: 39,316 checks, 0 failed. `export-test.js`: all passed. It logs "Error: toBlob gave nothing", which looks like an intentional negative case because the test still reports pass; worth a glance (integrator). `sample-test.js`: all passed.
+- **I changed no tests**: none asserted old markup.
+
+### Function
+
+| Item | PASS / FAIL | Why | Screenshot | Owner if failing |
+|---|---|---|---|---|
+| Kind screen unchanged | PASS | Same layout as the approved build (title, line, taped print with "tap your cutie", 9 line-icon tiles 01–09, beige). `git diff HEAD` shows no change to any Kind rule; the screen has no `data-kind`, and its background is still `#f6f2ea` | p4-kind-390.png vs rv-kind-390.png; p4-kind-360.png vs f-kind-360.png | |
+| Nudge variants first / generic / ios / inapp / blocked | PASS | Each forced variant shows its own colour note, Caveat title and line; `{name}` is filled ("Mr. Giles"); no braces left | p4-done-first/generic/ios/inapp/blocked-390.png | |
+| Nudge icons | PASS | iOS lines get the share icon after "Share"; in-app lines that say "menu" get the ⋯ dots (drawn SVG) | p4-done-ios-390.png, p4-done-inapp-note-zoom.png | |
+| No immediate repeats | PASS | 6 reloads in a row of `generic` at each size: 0 back-to-back repeats | (log) | |
+| Natural variant | PASS | After a real Save, a first card picks `first` ("Cutie #1: Mr. Giles. Kept in this browser, on this phone.") | p4-done-natural-390.png | |
+| `SC.binder.keepStatus()` / persist | PASS | Returns `{persisted:false, standalone:false, platform:"other", browserOk:true}` in headless Edge; no console errors in any run | (log) | |
+| Done: note + primary above the fold | PASS | 390×844: note ends at 487, Send to someone else ends at 561. 360×640: 491 / 566 of 640 | p4-done-*-390.png, p4-done-*-360.png | |
+| Landing at 360×640: Snap, Pick and the trust stamp visible | PASS | Snap 501, Pick 567, trust stamp 633 of 640 (the aside is covered: fix 1) | p4-landing-360.png | |
+| Result: tape vs top-bar buttons | PASS | Back and binder icons hit-test clean through the corner tape; tapping Back works | (log) | |
+| Tape and clips vs card text, all 6 styles | PASS | Result tape crosses only the card's top corners (the Dating photo's rounded corner is just touched). Reveal tape crosses only the card-back corners. No card text is covered. Exceptions: the FILED stamp (fix 2) and the loading ticket. When forced over a card, the NOW PRINTING ticket covers the card's bottom lines, but it's a short-lived overlay | p4-result-trading/wanted/polaroid/minimal/dating/news-390.png, p4-reveal-stamp-*-390.png, p4-loading-390.png | |
+| Reveal mid and landed, 3 kinds | PASS | Kind paper changes per kind (cat marigold, dog leaf, pigeon lilac); spin, squiggle, stamp, landing on the result | p4-reveal-mid/stamp/landed-cat/dog/pigeon-390.png | |
+| Golden reveal + result | PASS | Foil GOLDEN ticket stamp; gold only on golden things | p4-reveal-golden-390.png, p4-result-golden-390.png | |
+| Binder with 8 cards | PASS | Fits at 390 (right edge 362) and 360 (332); kind index tabs, foil "1 golden" badge, photo corners, paper clip, holes, pencilled 9–12 | p4-binder-390.png, p4-binder-full-390.png, p4-binder-360.png | |
+| Empty binder | PASS | Taped sticky note "nothing filed yet" over the empty slots, then Snap a cutie | p4-binder-empty-390.png, p4-binder-empty-360.png | |
+| Errors | PASS | Rose sheet, envelope with sky postage and RETURN TO SENDER ("not a photo" / "can't open this one"), one button | p4-error-notimage-390/360.png, p4-error-heic-390.png | |
+| Loading (NOW PRINTING ticket) | PASS (forced) | Kraft ticket, "NOW PRINTING · No. 001", Caveat line, three dots. The real load is too fast to catch on this PC, so I forced the overlay to see it | p4-loading-390.png | |
+| Reduced motion (emulated) | PASS | The fan doesn't cycle. The reveal runs only opacity animations and lands on the result in ~1.7 s. Done has no running animations | p4-reveal-reduced-700ms.png | |
+| Gift tag "TO:" field, reasons, Story size | PASS | | p4-result-gifttag-390.png | |
+
+**Pass 4 function counts: PASS 18 · FAIL 0** in this table. The 7 layout fails above are counted under the aesthetic layer.
+
+### Aesthetic (DESIGN.md §10, Scrapbook checklist)
+
+| # | Item | PASS / FAIL | Why | Screenshot |
+|---|---|---|---|---|
+| 1 | Photo is the hero; nothing covers photo or card text | **FAIL** | FILED stamp over the card address on Done (fix 2). Everything else passes | p4-done-filed-zoom.png |
+| 2 | Kind screen untouched | PASS | See the function row | p4-kind-390.png |
+| 3 | Colour moment on every other screen | PASS | Sky landing; kind paper on the reveal; kind band + tape on the result; marigold Done; lilac binder; rose error | p4-*-390.png |
+| 4 | Playful, not childish | PASS | Every device is a real paper object (washi, sticky notes, clips, stamps, envelope, kraft tag, ticket) or a drawn ink mark. No faces, characters or toy shapes | all |
+| 5 | One craft palette | PASS | Only §0.4 inks; no candy colours | all |
+| 6 | Text on colour is ink | PASS | Ink on all notes and sheets; tomato-deep only for stamp text | p4-done-*-390.png |
+| 7 | Flat controls | PASS | Same flat pill and outlined buttons, chips and tools | p4-result-trading-390.png |
+| 8 | Saving nudge is a taped sticky note, right variant | PASS (one collision) | Clip on the in-app title (fix 5) | p4-done-inapp-note-zoom.png |
+| 9 | Binder is a real album | PASS | | p4-binder-390.png |
+| 10 | Three faces max | PASS | | all |
+| 11 | No emoji | PASS | Share and ⋯ are drawn SVG | p4-done-ios-390.png |
+| 12 | Gold discipline | PASS | | p4-binder-390.png, p4-reveal-golden-390.png |
+| 13 | Card signature unchanged | PASS | Tag + address + `#001` on every card | p4-result-*-390.png |
+| 14 | Big targets, one primary per view | PASS | | p4-done-*-390.png |
+| 15 | Real typography | PASS | "you’re", "That doesn’t", "can’t", "…" | p4-error-*.png |
+| 16 | Motion quiet / reduced motion | PASS (emulated) | | p4-reveal-reduced-700ms.png |
+| 17 | Cards unchanged | PASS | Same renders as before | p4-result-*-390.png |
+| 18 | Family | PASS | Paper, ink-blue primary, serif, Caveat, footer on landing, Done and binder | p4-landing-390.png, p4-done-*-390.png, p4-binder-empty-390.png |
+| — | Nothing collides (layout) | **FAIL** | Fixes 1, 3, 5, 6, 7 | p4-landing-360.png, p4-reveal-stamp-dog-360.png, p4-binder-360.png |
+
+**Pass 4 aesthetic counts: PASS 17 · FAIL 2** (the two FAIL rows group fixes 1–7).
+
+**Matches the board** (board3-*-part*.png): same craft kit (tomato/marigold/leaf/sky/rose/lilac/kraft/note), the same landing composition (sky sheet, tomato dashes at the "?", tape and clip on the fan, scalloped edge, FREE · NO ACCOUNT stamp), FILED stamp, kraft TO: tag, lilac binder with tabs and foil badge, and the envelope error. No drift beyond the collisions above.
+
+**Playful vs childish:** it lands on playful. The colour comes from paper and tape, not from characters. The sticky notes and the RETURN TO SENDER envelope are the best new moments: witty, adult, journal-like.
+
+**Colour vs the old beige:** a clear step up. Every screen except Kind now has one confident sheet colour, and the cards still remain the loudest thing.
+
+**Cohesion with the cards:** good. The washi, stamps and photo corners are the same vocabulary the cards already use (Polaroid tape, Wanted stamp, accession tag), so shell and cards now feel like one scrapbook.
+
+**Gut check (would a 20-year-old send it?):**
+- Landing: yes at 390; almost at 360 (aside hidden).
+- Reveal: yes; the per-kind paper colour is a nice surprise.
+- Result: yes.
+- Done: yes; the sticky note is charming.
+- Binder: yes, it's the best screen.
+- Errors: yes.
+- Kind: unchanged and still yes.
+
+**Needs a real phone (new for pass 4):**
+1. iPhone Safari (not added to Home Screen): Done should show the **ios** note with the share icon.
+2. Open the site from an Instagram DM: Done should show the **inapp** note.
+3. iPhone Private Browsing: Done should show the **blocked** note.
+4. On Android Chrome, check `navigator.storage.persist()` doesn't prompt or error, and that the binder survives a week.
+5. With Reduce Motion on (iOS Settings › Accessibility › Motion), notes and stamps should appear without the settle/thump.
+
+---
+
+## Pass 3 and earlier (kept for history)
+
+
 ## Final status (pass 3, 2026-10-09)
 
 **Still failing: one item, not blocking.** Without a tap, auto-crop still frames the background for small or far animals (06 pigeon: hanging pots; 04 sleeping dog: the floor). The kind-screen "tap your cutie" now fixes this reliably when people use it. **Owner: engine-builder** (low priority).

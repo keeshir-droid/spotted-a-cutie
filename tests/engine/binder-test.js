@@ -133,6 +133,37 @@ function fakeCard(over) {
   eq(L.nextNumberOf([{ number: 2 }], 7), 8, "counter beats the highest saved number");
   try { await B.get("nope"); ok(false, "get missing should reject"); } catch (e) { ok(e.code, "get missing has a code"); }
 
+  // UA classification
+  const UAS = [
+    ["iPhone Safari", "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Mobile/15E148 Safari/604.1", "iPhone", 5, "ios"],
+    ["iPhone Instagram", "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/21E219 Instagram 330.0.0.34.108 (iPhone14,5; iOS 17_4; en_GB; en-GB; scale=3.00; 1170x2532; 570212345)", "iPhone", 5, "inapp"],
+    ["iPhone WhatsApp", "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/15E148 WhatsApp/24.7.80 Safari/604.1", "iPhone", 5, "inapp"],
+    ["iPhone Facebook", "Mozilla/5.0 (iPhone; CPU iPhone OS 17_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Mobile/21E219 [FBAN/FBIOS;FBAV/450.0.0.38.108;FBBV/5;FBDV/iPhone14,5]", "iPhone", 5, "inapp"],
+    ["iPadOS desktop site", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15", "MacIntel", 5, "ios"],
+    ["Mac Safari", "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.4 Safari/605.1.15", "MacIntel", 0, "other"],
+    ["Android Chrome", "Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36", "Linux armv8l", 5, "android"],
+    ["Android Instagram", "Mozilla/5.0 (Linux; Android 14; Pixel 8 Build/UP1A; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.0.0 Mobile Safari/537.36 Instagram 330.0.0.40.97 Android (34/14; 420dpi; 1080x2400; Google/google; Pixel 8; shiba; shiba; en_GB; 570212345)", "Linux armv8l", 5, "inapp"],
+    ["Android TikTok", "Mozilla/5.0 (Linux; Android 13; SM-S918B Build/TP1A; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.0.0 Mobile Safari/537.36 musical_ly_2023405030 BytedanceWebview/d8a21c6", "Linux armv8l", 5, "inapp"],
+    ["Android Snapchat", "Mozilla/5.0 (Linux; Android 13; SM-S918B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36 Snapchat/12.80.0.34", "Linux armv8l", 5, "inapp"],
+    ["Line", "Mozilla/5.0 (Linux; Android 13; SM-S918B Build/TP1A; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/124.0.0.0 Mobile Safari/537.36 Line/14.5.0/IAB", "Linux armv8l", 5, "inapp"],
+    ["Desktop Chrome", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36", "Win32", 0, "other"]
+  ];
+  UAS.forEach(function (r) { eq(L.classifyUA(r[1], r[2], r[3]), r[4], "UA " + r[0]); });
+
+  // persist(): once, after the first successful save only; never blocks or throws
+  let persistCalls = 0;
+  B._hooks.env = function () { return { ua: UAS[0][1], navPlatform: "iPhone", touchPoints: 5, standalone: true, storage: { persist: function () { persistCalls++; throw new Error("boom"); }, persisted: async function () { return false; } } }; };
+  B._reset();
+  eq(await B.keepStatus().then(function (s) { return s.persisted; }), false, "persisted false");
+  eq(persistCalls, 0, "not asked before a save");
+  await B.save(fakeCard({ seed: 50, number: 50, traits: { name: "Persist1" } }));
+  await B.save(fakeCard({ seed: 51, number: 51, traits: { name: "Persist2" } }));
+  eq(persistCalls, 1, "persist asked once, errors swallowed");
+  eq(await B.keepStatus(), { persisted: false, standalone: true, platform: "ios", browserOk: true }, "keepStatus shape");
+  B._hooks.env = function () { return { ua: "", navPlatform: "", touchPoints: 0, standalone: false, storage: null }; };
+  eq(await B.keepStatus(), { persisted: null, standalone: false, platform: "other", browserOk: true }, "unsupported storage -> null");
+  eq(await S0.binder.keepStatus(), { persisted: null, standalone: false, platform: "other", browserOk: false }, "Node, no idb");
+
   console.log(fails ? fails + " FAILED" : "binder-test: all passed");
   process.exit(fails ? 1 : 0);
 })().catch(function (e) { console.log("CRASH", e); process.exit(1); });

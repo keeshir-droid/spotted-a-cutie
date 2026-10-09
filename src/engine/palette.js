@@ -96,6 +96,9 @@
       paper: "#f6f2ea", stock: "#fffdf8", album: "#efe8da", ink: INK, ink2: "#3a4252", ink3: "#5f5c55",
       line: "#e6dfd1", line2: "#cbbfa8", accent: "#1f3a5f", accent2: "#2a4a78", accentSoft: "#e7edf6",
       gold: "#b8913f", goldInk: "#8a6420", bad: "#a33a2b",
+      /* PIVOT 2 (UI only, not used by any card): the Scrapbook craft inks, mirrors --sc-craft-* in design-tokens.css */
+      craft: { tomato: "#d4553a", tomatoDeep: "#b5432c", marigold: "#e8a83e", sky: "#6ea7cc", leaf: "#7ea35b", rose: "#e2898c", lilac: "#a897c9", kraft: "#c8a679", note: "#f4d97a" },
+      kindTape: { cat: "#e8a83e", dog: "#7ea35b", pigeon: "#a897c9", crow: "#6ea7cc", cow: "#7ea35b", squirrel: "#d4553a", monkey: "#e2898c", bird: "#6ea7cc", mystery: "#a897c9" },
       cardBack: { field: "#1f3a5f", line: CREAM, hatchAlpha: 0.07, hatchEvery: 6, rule1: { inset: 10, alpha: 0.7 }, rule2: { inset: 14, alpha: 0.35 }, plate: { w: 168, h: 112, cut: 10, color: CREAM } }
     },
 

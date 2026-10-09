@@ -1,0 +1,411 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Design board 3 · the Scrapbook (never deployed)</title>
+<link rel="stylesheet" href="../src/design-tokens.css">
+<style>
+* { box-sizing: border-box; }
+html { background: #e9e3d7; }
+body { margin: 0; width: 390px; background: var(--sc-paper); color: var(--sc-ink); font: 16px/1.5 var(--sc-sans); -webkit-font-smoothing: antialiased; }
+svg { display: block; }
+.num { font-variant-numeric: var(--sc-numeric); }
+
+/* ---------- board furniture ---------- */
+.cover { position: relative; padding: 28px 20px 34px; background: var(--sc-sheet-kraft); }
+.cover .k { font: 700 .72rem/1 var(--sc-sans); letter-spacing: .12em; text-transform: uppercase; display: flex; justify-content: space-between; margin: 0; }
+.cover h1 { font: 400 3.1rem/.95 var(--sc-serif); margin: 26px 0 12px; letter-spacing: -.015em; }
+.cover p.idea { margin: 0; font: italic 400 1.2rem/1.32 var(--sc-serif); max-width: 27ch; }
+.label { padding: 40px 20px 10px; display: flex; justify-content: space-between; align-items: baseline; }
+.label h2 { font: 400 1.6rem/1 var(--sc-serif); margin: 0; }
+.label span { font: 700 .6875rem/1 var(--sc-sans); letter-spacing: .1em; text-transform: uppercase; color: var(--sc-ink-3); }
+.phone { position: relative; width: 390px; background: var(--sc-paper); overflow: hidden; border-top: 1px dashed #c9bda5; border-bottom: 1px dashed #c9bda5; }
+.phone.h844 { height: 844px; }
+.fold { position: absolute; left: 0; right: 0; border-top: 1px dashed #b9ab90; z-index: 30; }
+.fold span { position: absolute; right: 6px; top: -15px; font: 700 .625rem/1 var(--sc-sans); letter-spacing: .1em; color: #9b8e74; }
+.pad { padding: 0 20px; }
+.center { text-align: center; }
+
+/* ---------- paper-craft devices (reference for the site-builder) ---------- */
+.sheet { background: var(--c); position: relative; }
+.scallop { height: 12px; background: radial-gradient(circle at 12px 0, var(--c) 11px, transparent 11.6px) 0 0 / 24px 12px repeat-x; position: relative; z-index: 2; margin-bottom: -12px; }
+.pinked { height: 7px; background: linear-gradient(135deg, var(--c) 25%, transparent 25%) -7px 0 / 14px 14px, linear-gradient(225deg, var(--c) 25%, transparent 25%) -7px 0 / 14px 14px; position: relative; z-index: 2; margin-bottom: -7px; }
+.washi { position: absolute; width: var(--w, 84px); height: 22px; background: var(--sc-washi-stripes), var(--t); opacity: var(--sc-washi-alpha); z-index: 6;
+  clip-path: polygon(0 0, 100% 0, 97% 25%, 100% 50%, 97% 75%, 100% 100%, 0 100%, 3% 75%, 0 50%, 3% 25%); }
+.washi.dots { background: var(--sc-washi-dots), var(--t); }
+.stamp { display: inline-grid; place-items: center; gap: 2px; padding: 9px 14px 8px; border: 2.5px solid currentColor; border-radius: 6px; color: var(--sc-craft-tomato-deep); position: relative;
+  -webkit-mask-image: var(--sc-stamp-mask); mask-image: var(--sc-stamp-mask); text-align: center; }
+.stamp::before { content: ""; position: absolute; inset: 3px; border: 1.2px solid currentColor; border-radius: 3px; }
+.stamp b { font: 800 .8125rem/1.1 var(--sc-sans); letter-spacing: .16em; text-transform: uppercase; }
+.stamp span { font: 600 .75rem/1.2 var(--sc-sans); letter-spacing: .04em; }
+.note { position: relative; background: var(--n, var(--sc-note)); padding: 20px 16px 15px; border-radius: 2px; box-shadow: var(--sc-shadow-paper); transform: rotate(var(--r, -1.2deg)); }
+.note .hand { display: block; font: 600 1.45rem/1.05 var(--sc-hand); color: var(--sc-ink); margin-bottom: 5px; }
+.note p { margin: 0; font: 400 .9375rem/1.42 var(--sc-sans); }
+.clip { position: absolute; z-index: 7; }
+.hand { font: 600 1.5rem/1.05 var(--sc-hand); }
+.h1 { font: 400 2rem/1.05 var(--sc-serif); margin: 0; text-wrap: balance; }
+.h2 { font: 400 1.375rem/1.2 var(--sc-serif); margin: 0 0 12px; }
+.small { font: 400 .8125rem/1.4 var(--sc-sans); color: var(--sc-ink-2); }
+.squig { display: block; margin: 2px auto 0; color: var(--sc-craft-tomato); }
+.ticket { position: relative; background: var(--sc-kraft); padding: 12px 18px; display: grid; grid-template-columns: 1fr auto; gap: 14px; align-items: center;
+  -webkit-mask: radial-gradient(circle at 0 50%, transparent 8px, #000 8.5px) left / 51% 100% no-repeat, radial-gradient(circle at 100% 50%, transparent 8px, #000 8.5px) right / 51% 100% no-repeat;
+  mask: radial-gradient(circle at 0 50%, transparent 8px, #000 8.5px) left / 51% 100% no-repeat, radial-gradient(circle at 100% 50%, transparent 8px, #000 8.5px) right / 51% 100% no-repeat; }
+.ticket .perf { border-left: 2px dashed rgba(28,36,51,.45); align-self: stretch; }
+
+/* family controls (unchanged look: flat, ink-blue primary) */
+.topbar { height: 52px; display: flex; align-items: center; justify-content: space-between; padding: 0 10px 0 12px; position: relative; z-index: 3; }
+.topbar .title { font: 600 .9375rem/1 var(--sc-sans); color: var(--sc-ink-2); font-variant-numeric: var(--sc-numeric); }
+.wordmark { display: flex; align-items: center; gap: 8px; font: 400 1.25rem/1 var(--sc-serif); padding-left: 8px; }
+.ibtn { width: 44px; height: 44px; display: grid; place-items: center; border-radius: 12px; background: none; border: 0; color: var(--sc-ink); }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; height: 56px; padding: 0 22px; width: 100%; border: 0; border-radius: 999px; background: var(--sc-accent); color: #fff; font: 600 1.0625rem/1 var(--sc-sans); white-space: nowrap; }
+.btn-2 { background: transparent; color: var(--sc-ink); box-shadow: inset 0 0 0 1.5px var(--sc-ink); }
+.btn-q { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 8px; border: 0; background: none; color: var(--sc-ink-2); font: 600 .9375rem/1 var(--sc-sans); }
+.btn-q u { text-decoration-color: var(--sc-craft-tomato); text-decoration-thickness: 2px; text-underline-offset: 4px; }
+.stack { display: grid; gap: 12px; }
+.chips { display: flex; gap: 8px; overflow: hidden; margin: 0 -20px; padding: 0 20px; }
+.chip { flex: none; display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 14px 0 10px; border-radius: 8px; background: var(--sc-stock); border: 1px solid var(--sc-line-2); font: 600 .9375rem/1 var(--sc-sans); white-space: nowrap; }
+.chip.sel { background: var(--sc-accent); border-color: var(--sc-accent); color: #fff; }
+.chip.plain { padding: 0 14px; }
+.mini { width: 14px; height: 18px; border-radius: 1.5px; box-shadow: 0 0 0 1px rgba(28,36,51,.3); position: relative; overflow: hidden; flex: none; }
+.mini.trading { background: #9a5f22; } .mini.trading::before { content: ""; position: absolute; inset: 3px 3px 8px; background: #f8f1e2; }
+.mini.minimal { background: #f7f3ec; } .mini.polaroid { background: #fbf8f1; } .mini.polaroid::before { content: ""; position: absolute; inset: 2px 2px 6px; background: #9aa1a8; }
+.mini.wanted { background: #e9d8b4; } .mini.wanted::before { content: ""; position: absolute; left: 2px; right: 2px; top: 2px; height: 3px; background: #2a2118; }
+.tools { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+.tool { height: 64px; border-radius: 12px; background: var(--sc-stock); border: 1px solid var(--sc-line-2); display: grid; justify-items: center; align-content: center; gap: 4px; font: 600 .8125rem/1.1 var(--sc-sans); text-align: center; padding: 0 3px; }
+.field { position: relative; height: 52px; border-radius: 10px 10px 4px 4px; background: var(--sc-stock); border: 1px solid var(--sc-line-2); border-bottom: 2px solid var(--sc-ink-3); display: flex; align-items: center; padding: 0 56px 0 42px; font: 500 1.0625rem/1 var(--sc-sans); }
+.field.noico { padding-left: 14px; }
+.field .ico { position: absolute; left: 13px; top: 50%; transform: translateY(-50%); color: var(--sc-craft-tomato-deep); }
+.field .ph { color: var(--sc-ink-3); font-weight: 400; }
+.field .count { position: absolute; right: 14px; top: 50%; transform: translateY(-50%); font: 400 .8125rem/1 var(--sc-sans); color: var(--sc-ink-3); }
+
+/* cards */
+.fc { position: absolute; border-radius: 3px; box-shadow: var(--sc-shadow-print); transform-origin: 50% 100%; }
+.fc > div, .fc { overflow: visible; }
+[data-card] canvas, [data-photo] canvas { width: 100%; height: 100%; display: block; border-radius: 3px; }
+.mounted { position: relative; }
+.mounted > i { position: absolute; width: 12px; height: 12px; background: var(--sc-ink); z-index: 2; }
+.mounted > i:nth-of-type(1) { left: -3px; top: -3px; clip-path: polygon(0 0, 100% 0, 0 100%); }
+.mounted > i:nth-of-type(2) { right: -3px; top: -3px; clip-path: polygon(0 0, 100% 0, 100% 100%); }
+.mounted > i:nth-of-type(3) { left: -3px; bottom: -3px; clip-path: polygon(0 0, 100% 100%, 0 100%); }
+.mounted > i:nth-of-type(4) { right: -3px; bottom: -3px; clip-path: polygon(100% 0, 100% 100%, 0 100%); }
+.mounted.gold > i { background: var(--sc-foil); }
+.mounted.empty > i { background: rgba(28,36,51,.25); }
+
+/* ======== LANDING ======== */
+.hero h1 { font: 400 2.85rem/1 var(--sc-serif); letter-spacing: -.012em; margin: 10px 0 8px; position: relative; display: inline-block; }
+.hero .sub { font: 400 1.0625rem/1.45 var(--sc-sans); margin: 0; max-width: 30ch; color: var(--sc-ink-2); }
+.fan { position: relative; height: 352px; margin-top: 12px; }
+.fan .f1 { width: 228px; height: 285px; left: 81px; top: 48px; transform: rotate(-2deg); z-index: 3; }
+.fan .f2 { width: 184px; height: 230px; left: 30px; top: 112px; transform: rotate(-8deg); z-index: 1; }
+.fan .f3 { width: 184px; height: 230px; left: 176px; top: 114px; transform: rotate(7deg); z-index: 2; }
+.fan .aside { position: absolute; right: 14px; top: 2px; transform: rotate(-4deg); color: var(--sc-ink-2); z-index: 6; }
+.fan .arrow { position: absolute; right: 168px; top: 4px; color: var(--sc-ink-2); z-index: 6; }
+.trust-stamp { display: flex; justify-content: center; margin: 22px 0 0; }
+.trust-stamp .stamp { transform: rotate(-3deg); }
+.site-footer { padding: 26px 16px 28px; display: grid; gap: 8px; }
+.more-from { display: flex; align-items: center; gap: 12px; margin: 0 0 4px; font-size: .9rem; font-weight: 600; font-variant-caps: all-small-caps; letter-spacing: .08em; color: var(--sc-ink-3); }
+.more-from::before, .more-from::after { content: ""; flex: 1; border-top: 4px double #d3c9b2; }
+.sib-card { display: flex; align-items: center; gap: 12px; min-height: 64px; padding: 10px 14px; background: #fffdf8; border: 1px solid #e6dfd1; border-radius: 16px; box-shadow: 0 1px 2px rgba(60,45,15,.06), 0 3px 10px rgba(60,45,15,.05); }
+.sib-ico { flex: none; width: 40px; height: 40px; border-radius: 12px; background: #e7edf6; color: var(--sc-accent); display: grid; place-items: center; font: italic 600 1.45rem/1 Georgia, serif; }
+.sib-text { display: grid; line-height: 1.25; } .sib-text strong { font-family: Georgia, serif; } .sib-text span { color: var(--sc-ink-3); font-size: .9rem; font-style: italic; }
+
+/* ======== REVEAL ======== */
+.reveal { height: 844px; position: relative; text-align: center; padding-top: 72px;
+  background: radial-gradient(rgba(28,36,51,.10) 1.3px, transparent 1.8px) 0 0 / 22px 22px, var(--c); }
+.reveal .meet { font: 600 1.875rem/1 var(--sc-hand); color: var(--sc-ink-2); }
+.reveal .name { font: 400 3.25rem/1.05 var(--sc-serif); letter-spacing: -.01em; margin: 4px 0 0; }
+.marks { position: absolute; color: var(--sc-craft-tomato); }
+.rv-card { position: absolute; left: 50px; top: 236px; width: 290px; height: 362px; transform: rotate(-2deg); z-index: 3; box-shadow: 0 2px 4px rgba(60,40,10,.2), 0 22px 40px -14px rgba(60,40,10,.45); border-radius: 3px; }
+.rv-stamp { position: absolute; left: 252px; top: 552px; z-index: 7; color: var(--sc-accent); background: rgba(255,253,248,.6); transform: rotate(-9deg); }
+.reveal .skip { position: absolute; left: 0; right: 0; bottom: 34px; font: 600 1.35rem/1 var(--sc-hand); color: var(--sc-ink-2); }
+
+/* ======== RESULT ======== */
+.res-band { position: absolute; left: 0; right: 0; top: 0; height: 236px; background: var(--c); }
+.res-band .pinked { position: absolute; left: 0; right: 0; bottom: -7px; }
+.res-card { position: relative; width: 300px; height: 375px; margin: 4px auto 0; z-index: 2; box-shadow: var(--sc-shadow-print); border-radius: 3px; }
+.gift { position: relative; margin: 24px 0 0; background: var(--sc-sheet-kraft); border-radius: 6px 18px 18px 6px; padding: 16px 16px 16px 40px; box-shadow: var(--sc-shadow-paper); transform: rotate(-.8deg); }
+.gift::before { content: ""; position: absolute; left: 14px; top: 50%; width: 12px; height: 12px; margin-top: -6px; border-radius: 50%; background: var(--sc-paper); box-shadow: inset 0 0 0 2px var(--sc-kraft); }
+.gift .to { font: 800 .75rem/1 var(--sc-sans); letter-spacing: .16em; color: var(--sc-craft-tomato-deep); margin: 0 0 8px; }
+.bar { position: absolute; left: 0; right: 0; bottom: 0; display: flex; gap: 10px; padding: 12px 20px 16px; background: var(--sc-paper); border-top: 1px solid var(--sc-line); z-index: 10; }
+.bar .btn { flex: 1.3; padding: 0 14px; gap: 8px; } .bar .btn-2 { flex: 1; }
+.rule { border-top: 1px solid var(--sc-line); margin: 22px 0 18px; }
+
+/* ======== DONE ======== */
+.done-top { position: relative; height: 270px; }
+.done-card { position: absolute; left: 186px; top: 22px; width: 150px; height: 187px; transform: rotate(-3deg); }
+.done-card > div { width: 100%; height: 100%; box-shadow: var(--sc-shadow-thumb); border-radius: 3px; }
+.filed { position: absolute; left: 236px; top: 170px; transform: rotate(-12deg); z-index: 5; background: rgba(255,253,248,.5); }
+.done-txt { text-align: center; padding: 30px 20px 0; }
+.done-txt .h1 { font-size: 1.875rem; }
+.done-txt .hand { color: var(--sc-ink-2); font-size: 1.875rem; display: inline-block; transform: rotate(-2deg); margin-top: 6px; }
+.variants { padding: 6px 20px 30px; display: grid; gap: 16px; }
+.vk { font: 700 .6875rem/1 var(--sc-sans); letter-spacing: .1em; text-transform: uppercase; color: var(--sc-ink-3); margin: 16px 0 -2px; }
+
+/* ======== BINDER ======== */
+.bind-top { padding: 0 20px 24px; }
+.bind-top h1 { font: 400 1.875rem/1.1 var(--sc-serif); margin: 4px 0 14px; }
+.badge-gold { display: inline-block; font: 400 1.5rem/1.2 var(--sc-serif); padding: 0 8px; border-radius: 3px; background: var(--sc-foil); box-shadow: inset 0 0 0 1.5px #7a5a1c; transform: rotate(-2deg); vertical-align: 2px; }
+.ktabs { display: flex; flex-wrap: wrap; gap: 6px; }
+.ktab { display: inline-flex; align-items: baseline; gap: 6px; height: 30px; padding: 7px 11px 0; border-radius: 8px 8px 0 0; background: var(--t); font: 700 .8125rem/1 var(--sc-sans); font-variant-numeric: tabular-nums; box-shadow: inset 0 -2px 0 rgba(28,36,51,.12); }
+.ktab small { font: 600 .6875rem/1 var(--sc-sans); letter-spacing: .1em; text-transform: uppercase; }
+.album { position: relative; margin: 26px 16px 0 12px; padding: 24px 20px 28px 30px; background: var(--sc-album); border-radius: 4px 10px 10px 4px; box-shadow: 0 1px 2px rgba(60,40,10,.16), 0 12px 24px -12px rgba(60,40,10,.4);
+  background-image: var(--sc-binding), var(--sc-grain-album); }
+.album .hole { position: absolute; left: 9px; width: 11px; height: 11px; border-radius: 50%; background: var(--c, var(--sc-paper)); box-shadow: var(--sc-shadow-hole); }
+.album .tabs { position: absolute; right: -11px; top: 26px; display: grid; gap: 5px; }
+.album .tabs i { display: block; width: 12px; height: 36px; border-radius: 0 5px 5px 0; background: var(--t); }
+.grid3 { display: grid; grid-template-columns: repeat(3, 1fr); column-gap: 14px; row-gap: 20px; }
+.slot { display: grid; gap: 6px; }
+.slot .ph { aspect-ratio: 4 / 5; }
+.slot .ph > div { width: 100%; height: 100%; border-radius: 2px; box-shadow: var(--sc-shadow-thumb); }
+.slot .cap { display: flex; justify-content: space-between; align-items: baseline; gap: 6px; }
+.slot .cap b { font: 600 1.125rem/1 var(--sc-hand); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.slot .cap span { font: 500 .6875rem/1 var(--sc-sans); color: var(--sc-ink-3); font-variant-numeric: tabular-nums; display: inline-flex; gap: 3px; align-items: center; }
+.slot.empty .ph { display: grid; place-items: center; }
+.slot.empty .pencil { font: 600 1.5rem/1 var(--sc-hand); color: rgba(28,36,51,.32); }
+
+/* ======== ERROR / LOADING ======== */
+.err-top { height: 300px; position: relative; }
+.envelope { position: absolute; left: 70px; top: 70px; width: 250px; height: 160px; background: #fbf6ea; box-shadow: var(--sc-shadow-paper); transform: rotate(-4deg); }
+.envelope::before { content: ""; position: absolute; inset: 0 0 auto 0; height: 80px; background: linear-gradient(to bottom right, transparent 49.5%, #e9e0cc 50%) left / 50% 100% no-repeat, linear-gradient(to bottom left, transparent 49.5%, #e9e0cc 50%) right / 50% 100% no-repeat; }
+.envelope .stamp { position: absolute; left: 34px; top: 66px; transform: rotate(-10deg); font-size: 1.1em; }
+.envelope .post { position: absolute; right: 14px; top: 12px; width: 40px; height: 48px; background: var(--sc-craft-sky); outline: 2px dashed #fbf6ea; outline-offset: -3px; }
+.end { padding: 24px 20px 40px; font-size: .8125rem; color: var(--sc-ink-3); }
+</style>
+</head>
+<body>
+
+<!-- ============ COVER ============ -->
+<header class="cover">
+  <p class="k"><span>Design board 3 · the scrapbook</span><span class="num">9 Oct 2026</span></p>
+  <span class="washi" style="--t:var(--sc-craft-tomato);--w:96px;left:-14px;top:58px;transform:rotate(-24deg)"></span>
+  <h1>The Scrapbook</h1>
+  <p class="idea">A junk journal kept by someone with taste: every cutie gets filed, taped, stamped and annotated. The colour comes from paper, tape and stamp ink. The jokes come from the words.</p>
+  <svg class="clip" style="right:30px;top:-6px;transform:rotate(8deg)" width="22" height="64" viewBox="0 0 22 64" fill="none" stroke="#8b919c" stroke-width="2.4" stroke-linecap="round"><path d="M7 20V50a5 5 0 0 0 10 0V10a7 7 0 0 0-14 0v44a9 9 0 0 0 18 0V24"/></svg>
+</header>
+<div class="pinked" style="--c: var(--sc-sheet-kraft)"></div>
+
+<div class="label" style="padding-top:34px"><h2>The craft kit</h2><span>paper · tape · ink</span></div>
+<div class="pad">
+  <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px">
+    <div style="height:46px;background:var(--sc-craft-tomato);border-radius:2px"></div><div style="height:46px;background:var(--sc-craft-marigold);border-radius:2px"></div>
+    <div style="height:46px;background:var(--sc-craft-leaf);border-radius:2px"></div><div style="height:46px;background:var(--sc-craft-sky);border-radius:2px"></div>
+    <div style="height:46px;background:var(--sc-craft-rose);border-radius:2px"></div><div style="height:46px;background:var(--sc-craft-lilac);border-radius:2px"></div>
+    <div style="height:46px;background:var(--sc-kraft);border-radius:2px"></div><div style="height:46px;background:var(--sc-note);border-radius:2px"></div>
+  </div>
+  <p class="small" style="margin:0 0 6px">tomato · marigold · leaf · sky · rose · lilac · kraft · note. Ink on every one (5.4:1 or more); tomato: large text only.</p>
+  <div style="position:relative;height:110px;margin-top:16px">
+    <span class="washi" style="--t:var(--sc-craft-marigold);left:0;top:8px;transform:rotate(-4deg)"></span>
+    <span class="washi dots" style="--t:var(--sc-craft-sky);left:100px;top:2px;transform:rotate(3deg)"></span>
+    <span class="washi" style="--t:var(--sc-craft-rose);left:196px;top:10px;transform:rotate(-2deg)"></span>
+    <span class="washi dots" style="--t:var(--sc-craft-leaf);left:290px;top:4px;--w:60px;transform:rotate(5deg)"></span>
+    <span class="stamp" style="position:absolute;left:6px;top:52px;transform:rotate(-5deg)"><b>Filed</b><span>9 Oct 2026</span></span>
+    <span class="stamp" style="position:absolute;left:118px;top:56px;transform:rotate(3deg);color:var(--sc-accent)"><b>Common</b></span>
+    <svg style="position:absolute;left:236px;top:52px;color:var(--sc-craft-tomato)" width="120" height="40" viewBox="0 0 120 40" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 26c14-10 22 8 36-2s22 6 36-3 22 4 38-4"/><path d="M14 8l2 5 5 1-4 3 1 5-4-3-5 2 2-5-3-4 5 0z"/></svg>
+  </div>
+</div>
+
+<!-- ============ LANDING ============ -->
+<div class="label"><h2>Landing</h2><span>colour: sky sheet + tape</span></div>
+<div class="phone">
+  <div class="fold" style="top:844px"><span>FOLD · 844</span></div>
+  <section class="sheet hero" style="--c: var(--sc-moment-landing)">
+    <div class="topbar">
+      <div class="wordmark"><svg width="22" height="14" viewBox="0 0 22 14" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 1h16a2 2 0 0 1 2 2v1.6a2.4 2.4 0 0 0 0 4.8V11a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9.4a2.4 2.4 0 0 0 0-4.8V3a2 2 0 0 1 2-2Z"/></svg>Spotted a cutie</div>
+      <button class="btn-q"><span data-icon="binder" data-size="20"></span><u>My cuties <span class="num">(6)</span></u></button>
+    </div>
+    <div class="pad">
+      <h1>Spotted a cutie?<svg style="position:absolute;right:-26px;top:-8px;color:var(--sc-craft-tomato)" width="26" height="26" viewBox="0 0 26 26" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M6 20 2 24M13 16l1-8M19 18l6-4"/></svg></h1>
+      <p class="sub">Snap any street cat, dog or pigeon. Find out who they really are.</p>
+    </div>
+    <div class="fan">
+      <span class="aside hand">real cats. fake names.</span>
+      <svg class="arrow" width="48" height="40" viewBox="0 0 48 40" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M45 12C32 7 18 12 12 33"/><path d="M7.5 27 12 34l6.5-5"/></svg>
+      <div class="fc f2" data-card="mochi"></div>
+      <div class="fc f3" data-card="bruno"></div>
+      <div class="fc f1" data-card="larry"></div>
+      <span class="washi" style="--t:var(--sc-craft-tomato);left:153px;top:34px;transform:rotate(-3deg)"></span>
+      <span class="washi dots" style="--t:var(--sc-craft-marigold);left:300px;top:118px;--w:70px;transform:rotate(38deg)"></span>
+      <svg class="clip" style="left:44px;top:96px;transform:rotate(-14deg)" width="22" height="64" viewBox="0 0 22 64" fill="none" stroke="#8b919c" stroke-width="2.4" stroke-linecap="round"><path d="M7 20V50a5 5 0 0 0 10 0V10a7 7 0 0 0-14 0v44a9 9 0 0 0 18 0V24"/></svg>
+    </div>
+  </section>
+  <div class="scallop" style="--c: var(--sc-moment-landing)"></div>
+  <div class="pad stack" style="margin-top:34px">
+    <button class="btn"><span data-icon="camera" data-size="22"></span>Snap a cutie</button>
+    <button class="btn btn-2"><span data-icon="photos" data-size="22"></span>Pick a photo</button>
+  </div>
+  <div class="trust-stamp"><span class="stamp"><b>Free · no account</b><span>your photos stay on your phone</span></span></div>
+  <footer class="site-footer">
+    <p class="more-from">More from Risheek</p>
+    <a class="sib-card"><span class="sib-ico">Aa</span><span class="sib-text"><strong>Handwriting → Font</strong><span>Type in your own handwriting.</span></span></a>
+  </footer>
+</div>
+
+<!-- ============ REVEAL ============ -->
+<div class="label"><h2>Reveal</h2><span>kind paper · cat</span></div>
+<div class="phone h844">
+  <div class="reveal" style="--c: var(--sc-kind-paper-cat)">
+    <div class="meet">Meet…</div>
+    <div class="name">Larry</div>
+    <svg class="squig" width="150" height="16" viewBox="0 0 150 16" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M4 9c12-7 20 6 32 0s20-7 32 0 20 6 32 0 20-6 32 1 10 2 14-1"/></svg>
+    <svg class="marks" style="left:62px;top:104px" width="36" height="36" viewBox="0 0 36 36" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M18 4l3 8 8 1-6 5 2 8-7-4-7 4 2-8-6-5 8-1z"/></svg>
+    <svg class="marks" style="right:62px;top:96px" width="30" height="30" viewBox="0 0 30 30" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M4 26l8-8M16 8l2-6M22 18l6 2"/></svg>
+    <div class="rv-card" data-card="larry"></div>
+    <span class="washi" style="--t:var(--sc-craft-tomato);left:30px;top:232px;transform:rotate(-38deg)"></span>
+    <span class="washi dots" style="--t:var(--sc-craft-sky);left:282px;top:226px;transform:rotate(34deg);--w:76px"></span>
+    <span class="stamp rv-stamp"><b>Common</b><svg width="9" height="9" viewBox="0 0 10 10"><circle cx="5" cy="5" r="4" fill="currentColor"/></svg></span>
+    <div class="skip">tap to skip the drama</div>
+  </div>
+</div>
+
+<!-- ============ RESULT ============ -->
+<div class="label"><h2>Result</h2><span>colour: kind paper band + tape</span></div>
+<div class="phone h844">
+  <div class="res-band" style="--c: var(--sc-kind-paper-cat)"><div class="pinked" style="--c: var(--sc-kind-paper-cat)"></div></div>
+  <div class="topbar"><button class="ibtn"><span data-icon="back"></span></button><span class="title">Cutie #001</span><button class="ibtn"><span data-icon="binder"></span></button></div>
+  <div class="res-card" data-card="larry"></div>
+  <span class="washi" style="--t:var(--sc-kind-tape-cat);left:28px;top:56px;transform:rotate(-35deg)"></span>
+  <span class="washi" style="--t:var(--sc-kind-tape-cat);left:280px;top:56px;transform:rotate(35deg)"></span>
+  <div class="pad" style="position:relative;z-index:2">
+    <div class="chips" style="margin-top:16px">
+      <span class="chip"><i class="mini minimal"></i>Minimal</span>
+      <span class="chip sel"><i class="mini trading"></i>Trading card</span>
+      <span class="chip"><i class="mini polaroid"></i>Polaroid</span>
+      <span class="chip"><i class="mini wanted"></i>Wanted</span>
+    </div>
+    <div class="tools" style="margin-top:12px">
+      <div class="tool"><span data-icon="dice" data-size="22"></span>New name</div>
+      <div class="tool"><span data-icon="dice" data-size="22"></span>New personality</div>
+      <div class="tool"><span data-icon="pencil" data-size="22"></span>Edit words</div>
+      <div class="tool"><span data-icon="crop" data-size="22"></span>Adjust photo</div>
+    </div>
+    <div class="rule"></div>
+    <h2 class="h2">Where did you spot them?</h2>
+    <div class="field"><span class="ico" data-icon="pin" data-size="18"></span><span class="ph">on a scooter seat</span><span class="count">0/32</span></div>
+    <div class="gift"><p class="to">To:</p><div class="field noico"><span class="ph">Priya</span><span class="count">0/16</span></div></div>
+  </div>
+  <div class="bar"><button class="btn"><span data-icon="share" data-size="22"></span>Send</button><button class="btn btn-2"><span data-icon="save" data-size="22"></span>Save image</button></div>
+</div>
+
+<!-- ============ DONE ============ -->
+<div class="label"><h2>Done</h2><span>colour: marigold sheet + note</span></div>
+<div class="phone">
+  <section class="sheet" style="--c: var(--sc-moment-done)">
+    <div class="topbar"><button class="ibtn"><span data-icon="close"></span></button><span></span><span style="width:44px"></span></div>
+    <div class="done-top">
+      <div class="done-card mounted"><i></i><i></i><i></i><i></i><div data-card="larry"></div></div>
+      <span class="stamp filed"><b>Filed</b><span>No. 001 · 9 Oct</span></span>
+      <svg style="position:absolute;left:70px;top:76px;color:var(--sc-ink-2)" width="100" height="60" viewBox="0 0 86 60" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8c30-6 60 6 74 40"/><path d="M70 44l8 6 3-10"/></svg>
+      <span class="hand" style="position:absolute;left:20px;top:40px;transform:rotate(-6deg);color:var(--sc-ink-2)">safe and sound</span>
+    </div>
+  </section>
+  <div class="scallop" style="--c: var(--sc-moment-done)"></div>
+  <div class="done-txt"><h1 class="h1">Larry is in your binder.</h1><span class="hand">Cutie #1. A strong start.</span></div>
+  <div class="pad" style="margin-top:24px">
+    <div class="note"><span class="washi" style="--t:var(--sc-craft-sky);left:50%;margin-left:-42px;top:-11px;transform:rotate(-3deg)"></span>
+      <span class="hand">psst, about Larry…</span>
+      <p>Larry only lives in this browser. <b>Save the image</b> or send it to yourself, so they can’t wander off.</p></div>
+    <div class="stack" style="margin-top:28px">
+      <button class="btn"><span data-icon="share" data-size="22"></span>Send to someone else</button>
+      <button class="btn btn-2">Try another style</button>
+      <button class="btn btn-2"><span data-icon="camera" data-size="22"></span>Spot another cutie</button>
+    </div>
+    <div class="center" style="margin:8px 0 24px"><button class="btn-q"><span data-icon="binder" data-size="20"></span><u>My cuties</u></button></div>
+  </div>
+</div>
+<div class="variants">
+  <p class="vk">Nudge · iPhone Safari</p>
+  <div class="note" style="--r:1deg"><span class="washi dots" style="--t:var(--sc-craft-tomato);left:24px;top:-11px;transform:rotate(-6deg)"></span>
+    <span class="hand">keep Larry for keeps</span><p>On iPhone, tap <b>Share</b>, then <b>Add to Home Screen</b>. Your binder gets its own little door.</p></div>
+  <p class="vk">Nudge · Instagram / WhatsApp in-app browser</p>
+  <div class="note" style="--r:-1.5deg;--n:var(--sc-sheet-rose)"><span class="washi" style="--t:var(--sc-craft-leaf);right:20px;top:-11px;transform:rotate(5deg)"></span>
+    <svg class="clip" style="left:16px;top:-16px" width="18" height="52" viewBox="0 0 22 64" fill="none" stroke="#8b919c" stroke-width="2.6" stroke-linecap="round"><path d="M7 20V50a5 5 0 0 0 10 0V10a7 7 0 0 0-14 0v44a9 9 0 0 0 18 0V24"/></svg>
+    <span class="hand">you’re inside an app</span><p>Larry won’t be kept in here. Tap the menu, then <b>Open in browser</b>, and spot your next cutie there.</p></div>
+  <p class="vk">Nudge · everyone else</p>
+  <div class="note" style="--r:.8deg;--n:var(--sc-sheet-sky)"><span class="washi" style="--t:var(--sc-craft-marigold);left:50%;margin-left:-42px;top:-11px;transform:rotate(2deg)"></span>
+    <span class="hand">tiny reminder</span><p>Your binder lives in this browser. Clearing it clears Larry. <b>Save the image</b> too, just in case.</p></div>
+</div>
+
+<!-- ============ BINDER ============ -->
+<div class="label"><h2>Binder</h2><span>colour: lilac sheet + tabs</span></div>
+<div class="phone">
+  <section class="sheet" style="--c: var(--sc-moment-binder)">
+    <div class="topbar"><button class="ibtn"><span data-icon="back"></span></button><span class="title">My cuties</span><span style="width:44px"></span></div>
+    <div class="bind-top">
+      <h1>6 cuties spotted · <span class="badge-gold">1 golden</span></h1>
+      <div class="ktabs">
+        <span class="ktab" style="--t:var(--sc-kind-tape-cat)"><small>Cats</small>2</span>
+        <span class="ktab" style="--t:var(--sc-kind-tape-dog)"><small>Dogs</small>2</span>
+        <span class="ktab" style="--t:var(--sc-kind-tape-pigeon)"><small>Pigeons</small>1</span>
+        <span class="ktab" style="--t:var(--sc-kind-tape-cow)"><small>Cows</small>1</span>
+      </div>
+    </div>
+  </section>
+  <div class="album" style="--c: var(--sc-paper)">
+    <span class="hole" style="top:15%"></span><span class="hole" style="top:50%"></span><span class="hole" style="top:85%"></span>
+    <div class="tabs"><i style="--t:var(--sc-kind-tape-cat)"></i><i style="--t:var(--sc-kind-tape-dog)"></i><i style="--t:var(--sc-kind-tape-pigeon)"></i><i style="--t:var(--sc-kind-tape-cow)"></i></div>
+    <svg class="clip" style="left:150px;top:-22px;transform:rotate(4deg)" width="20" height="58" viewBox="0 0 22 64" fill="none" stroke="#8b919c" stroke-width="2.4" stroke-linecap="round"><path d="M7 20V50a5 5 0 0 0 10 0V10a7 7 0 0 0-14 0v44a9 9 0 0 0 18 0V24"/></svg>
+    <div class="grid3">
+      <div class="slot"><div class="ph mounted"><i></i><i></i><i></i><i></i><div data-card="larry"></div></div><div class="cap"><b>Larry</b><span>#001</span></div></div>
+      <div class="slot"><div class="ph mounted"><i></i><i></i><i></i><i></i><div data-card="mochi"></div></div><div class="cap"><b>Mochi</b><span>#002</span></div></div>
+      <div class="slot"><div class="ph mounted"><i></i><i></i><i></i><i></i><div data-card="pickle"></div></div><div class="cap"><b>Sir Pickle</b><span>#003</span></div></div>
+      <div class="slot"><div class="ph mounted"><i></i><i></i><i></i><i></i><div data-card="bimla"></div></div><div class="cap"><b>Bimla</b><span>#004</span></div></div>
+      <div class="slot"><div class="ph mounted gold"><i></i><i></i><i></i><i></i><div data-card="kevin"></div></div><div class="cap"><b>Kevin</b><span><svg width="9" height="9" viewBox="0 0 24 24"><path d="M12 2.5l2.7 6.4 6.8.5-5.2 4.4 1.7 6.7L12 16.9l-6 3.6 1.7-6.7-5.2-4.4 6.8-.5z" fill="#8a6420"/></svg>#005</span></div></div>
+      <div class="slot"><div class="ph mounted"><i></i><i></i><i></i><i></i><div data-card="bruno"></div></div><div class="cap"><b>Bruno</b><span>#006</span></div></div>
+      <div class="slot empty"><div class="ph mounted empty"><i></i><i></i><i></i><i></i><span class="pencil">7</span></div></div>
+      <div class="slot empty"><div class="ph mounted empty"><i></i><i></i><i></i><i></i><span class="pencil">8</span></div></div>
+      <div class="slot empty"><div class="ph mounted empty"><i></i><i></i><i></i><i></i><span class="pencil">9</span></div></div>
+    </div>
+  </div>
+  <p class="small center" style="margin:22px 30px 28px">Your cuties live on this phone only. Clearing your browser clears them.</p>
+</div>
+
+<!-- ============ EMPTY BINDER ============ -->
+<div class="label"><h2>Empty binder</h2><span>colour: lilac + a note</span></div>
+<div class="phone">
+  <section class="sheet" style="--c: var(--sc-moment-binder)">
+    <div class="topbar"><button class="ibtn"><span data-icon="back"></span></button><span class="title">My cuties</span><span style="width:44px"></span></div>
+    <div class="bind-top"><h1>No cuties yet</h1></div>
+  </section>
+  <div class="album" style="margin-top:20px">
+    <span class="hole" style="top:20%"></span><span class="hole" style="top:80%"></span>
+    <div class="grid3">
+      <div class="slot empty"><div class="ph mounted empty"><i></i><i></i><i></i><i></i><span class="pencil">1</span></div></div>
+      <div class="slot empty"><div class="ph mounted empty"><i></i><i></i><i></i><i></i><span class="pencil">2</span></div></div>
+      <div class="slot empty"><div class="ph mounted empty"><i></i><i></i><i></i><i></i><span class="pencil">3</span></div></div>
+    </div>
+    <div class="note" style="--r:-3deg;margin:-70px 18px 0 30px;z-index:4"><span class="washi" style="--t:var(--sc-craft-tomato);left:50%;margin-left:-42px;top:-11px;transform:rotate(4deg)"></span>
+      <span class="hand">nothing filed yet</span><p>Go outside. Someone fluffy is sitting on a scooter, waiting to be catalogued.</p></div>
+  </div>
+  <div class="pad" style="margin:30px 0 30px"><button class="btn"><span data-icon="camera" data-size="22"></span>Snap a cutie</button></div>
+</div>
+
+<!-- ============ ERROR + LOADING ============ -->
+<div class="label"><h2>Error</h2><span>rose sheet · stamp</span></div>
+<div class="phone h844">
+  <section class="sheet err-top" style="--c: var(--sc-moment-error)">
+    <div class="topbar"><button class="ibtn"><span data-icon="back"></span></button><span></span><span style="width:44px"></span></div>
+    <div class="envelope"><span class="post"></span><span class="stamp"><b>Return to sender</b><span>not a photo</span></span></div>
+  </section>
+  <div class="pinked" style="--c: var(--sc-moment-error)"></div>
+  <div class="pad center" style="padding-top:34px">
+    <h1 class="h1" style="font-size:1.75rem">That file isn’t a photo.</h1>
+    <p style="margin:10px auto 0;max-width:30ch;color:var(--sc-ink-2)">Pick a picture from your camera roll, or snap a new one.</p>
+    <div style="margin-top:24px"><button class="btn"><span data-icon="photos" data-size="22"></span>Pick another photo</button></div>
+  </div>
+  <div class="pad" style="position:absolute;left:0;right:0;bottom:34px">
+    <p class="small center" style="margin:0 0 10px">Loading state:</p>
+    <div class="ticket" style="transform:rotate(-1.5deg)">
+      <div><b style="font:800 .75rem/1 var(--sc-sans);letter-spacing:.16em">NOW PRINTING · No. 014</b><span class="hand" style="display:block;margin-top:4px;font-size:1.3rem;color:var(--sc-ink)">making Larry’s paperwork…</span></div>
+      <svg width="40" height="12" viewBox="0 0 40 12"><circle cx="6" cy="6" r="4" fill="#1c2433"/><circle cx="20" cy="6" r="4" fill="#1c2433" opacity=".5"/><circle cx="34" cy="6" r="4" fill="#1c2433" opacity=".2"/></svg>
+    </div>
+  </div>
+</div>
+
+<div class="end">design/board3.html · never deployed · Kind screen: approved as built, not mocked here · cards: unchanged (board.js mock)</div>
+
+<script src="../src/engine/palette.js"></script>
+<script src="board.js"></script>
+</body>
+</html>

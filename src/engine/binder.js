@@ -184,7 +184,20 @@
     },
     urlFor: function (blob) { return (typeof URL !== "undefined" && URL.createObjectURL && blob) ? URL.createObjectURL(blob) : ""; },
     revoke: function (url) { try { if (url && typeof URL !== "undefined" && URL.revokeObjectURL) URL.revokeObjectURL(url); } catch (e) { /* ignore */ } },
-    now: function () { return Date.now(); }
+    now: function () { return Date.now(); },
+    // read only when called, never at load: { ua, navPlatform, touchPoints, standalone, storage }
+    env: function () {
+      const e = { ua: "", navPlatform: "", touchPoints: 0, standalone: false, storage: null };
+      try {
+        if (typeof navigator !== "undefined" && navigator) {
+          e.ua = navigator.userAgent || ""; e.navPlatform = navigator.platform || ""; e.touchPoints = navigator.maxTouchPoints || 0;
+          e.storage = navigator.storage || null;
+          if (navigator.standalone) e.standalone = true;
+        }
+        if (!e.standalone && typeof matchMedia === "function") e.standalone = !!matchMedia("(display-mode: standalone)").matches;
+      } catch (x) { /* keep defaults */ }
+      return e;
+    }
   };
 
   // ---------- public ----------
@@ -206,7 +219,35 @@
     });
     try { card.binderId = rec.id; } catch (e) { /* frozen card: fine */ }
     try { if (card.settings && card.settings.number !== rec.number && typeof card.update === "function") card.update({ number: rec.number }); } catch (e) { /* the card keeps its own number */ }
+    askPersist();
     return rec.id;
+  }
+
+  // ---------- keeping it: persistent storage + status ----------
+  // After the first successful save of a session, ask the browser once not to clear our data. Never throws, never waits.
+  let persistAsked = false;
+  function askPersist() {
+    if (persistAsked) return;
+    persistAsked = true;
+    try {
+      const st = hooks.env().storage;
+      if (st && typeof st.persist === "function") { const p = st.persist(); if (p && p.catch) p.catch(function () { /* ignore */ }); }
+    } catch (e) { /* ignore */ }
+  }
+  // 'inapp' (Instagram, Facebook, WhatsApp, Line, TikTok, Snapchat webviews), 'ios' (iPhone/iPad, incl. iPadOS as Macintosh with touch), 'android', else 'other'
+  function classifyUA(ua, navPlatform, touchPoints) {
+    ua = ua || "";
+    if (/Instagram|FBAN|FBAV|FB_IAB|WhatsApp|\bLine\/|Musical_ly|musical\.ly|BytedanceWebview|TikTok|Snapchat/i.test(ua)) return "inapp";
+    if (/iPhone|iPad|iPod/.test(ua)) return "ios";
+    if (navPlatform === "MacIntel" && touchPoints > 1) return "ios";
+    if (/Android/i.test(ua)) return "android";
+    return "other";
+  }
+  async function keepStatus() {
+    const env = hooks.env();
+    let persisted = null;
+    try { if (env.storage && typeof env.storage.persisted === "function") persisted = !!(await env.storage.persisted()); } catch (e) { persisted = null; }
+    return { persisted: persisted, standalone: !!env.standalone, platform: classifyUA(env.ua, env.navPlatform, env.touchPoints), browserOk: await available() };
   }
 
   let urls = {};
@@ -236,9 +277,9 @@
   async function recentNames(n) { return recentNamesOf(await all(), n); }
 
   SC.binder = {
-    available: available, save: save, list: list, get: get, remove: remove, stats: stats, recentNames: recentNames,
-    _logic: { nextNumberOf: nextNumberOf, statsOf: statsOf, newestFirst: newestFirst, recentNamesOf: recentNamesOf, findExisting: findExisting, buildRecord: buildRecord },
+    available: available, save: save, list: list, get: get, remove: remove, stats: stats, recentNames: recentNames, keepStatus: keepStatus,
+    _logic: { classifyUA: classifyUA, nextNumberOf: nextNumberOf, statsOf: statsOf, newestFirst: newestFirst, recentNamesOf: recentNamesOf, findExisting: findExisting, buildRecord: buildRecord },
     _hooks: hooks,
-    _reset: function () { dbPromise = null; urls = {}; }
+    _reset: function () { dbPromise = null; urls = {}; persistAsked = false; }
   };
 })();

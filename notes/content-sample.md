@@ -556,3 +556,37 @@ Style: Trading card · For Priya: Your new girlfriend
 | Reminded me of you | for Priya: this reminded me of you | Gifted to Priya. Saw this, thought of you. | Priya, this one made me think of you ♥ | Wanted for reminding me of Priya | Larry ♥ Priya: thought of you | CAT REMINDS ENTIRE STREET OF PRIYA |
 | Your replacement | for Priya: your replacement starts Monday | Gifted to Priya. Your replacement. No pressure. | Priya, sorry, you've been replaced ♥ | Wanted: Priya's replacement. Found. | New match! Larry is Priya 2.0 | PRIYA REPLACED BY CAT, SOURCES SAY |
 | Wants to meet you | for Priya: Larry wants to meet you | Gifted to Priya. Larry would like a meeting. | Priya, Larry wants to meet you ♥ | Wanted for a meeting with Priya | Larry wants to meet Priya ♥ | LOCAL CAT ASKS ABOUT PRIYA |
+
+---
+
+## Sample Done-screen nudges (3 per platform, name = Larry)
+
+**first**
+
+- Your binder has begun. It lives on this phone, so keep a copy too.
+- Cutie #1: Larry. Kept in this browser, on this phone.
+- Larry kicks off your binder! It lives on this phone.
+
+**generic**
+
+- Larry is safe in your binder, right here on this phone.
+- Larry lives in this browser, on this phone. Cozy!
+- Larry has moved in. This phone only, so save a copy.
+
+**ios**
+
+- Collector move: tap Share, then Add to Home Screen.
+- Keep Larry cozy: tap Share, then Add to Home Screen.
+- Your binder lives on this iPhone. Add to Home Screen so it stays.
+
+**inapp**
+
+- Collecting lots? Open the site in your main browser from the menu.
+- This binder belongs to the app. Safari or Chrome keeps it for good.
+- Larry prefers your main browser. Menu, then Open in browser.
+
+**blocked**
+
+- This browser can't hold on to cards. Your camera roll can.
+- This browser can't keep cuties, but Larry works. Send or save!
+- Private mode, maybe? Send or save the card to keep your cuties.
